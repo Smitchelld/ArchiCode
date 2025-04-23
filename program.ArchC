@@ -1,3 +1,8 @@
-Define zmienna = 0
-request zmienna
-show zmienna + 17
+Core() delivers int return {
+    show "Hello, ArchiCode"
+    show "To działa!"
+    return = 0
+}
+
+show "Hello, ArchiCode"
+show "To działa a nie powinno!"

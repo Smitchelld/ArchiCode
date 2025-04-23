@@ -22,6 +22,12 @@ public interface ArchiCodeVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStatement(ArchiCodeParser.StatementContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link ArchiCodeParser#coreStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCoreStatement(ArchiCodeParser.CoreStatementContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link ArchiCodeParser#showStatement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -46,6 +52,57 @@ public interface ArchiCodeVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitRequestStatement(ArchiCodeParser.RequestStatementContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link ArchiCodeParser#blueprintStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBlueprintStatement(ArchiCodeParser.BlueprintStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ArchiCodeParser#paramList}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParamList(ArchiCodeParser.ParamListContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ArchiCodeParser#param}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParam(ArchiCodeParser.ParamContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code repeatFixed}
+	 * labeled alternative in {@link ArchiCodeParser#repeatStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRepeatFixed(ArchiCodeParser.RepeatFixedContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code repeatUntil}
+	 * labeled alternative in {@link ArchiCodeParser#repeatStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRepeatUntil(ArchiCodeParser.RepeatUntilContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code repeatFor}
+	 * labeled alternative in {@link ArchiCodeParser#repeatStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRepeatFor(ArchiCodeParser.RepeatForContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ArchiCodeParser#checkStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCheckStatement(ArchiCodeParser.CheckStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ArchiCodeParser#block}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBlock(ArchiCodeParser.BlockContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code stringExpr}
 	 * labeled alternative in {@link ArchiCodeParser#expr}.
 	 * @param ctx the parse tree
@@ -60,6 +117,20 @@ public interface ArchiCodeVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitVarExpr(ArchiCodeParser.VarExprContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code eqExpr}
+	 * labeled alternative in {@link ArchiCodeParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEqExpr(ArchiCodeParser.EqExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ltExpr}
+	 * labeled alternative in {@link ArchiCodeParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLtExpr(ArchiCodeParser.LtExprContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code intExpr}
 	 * labeled alternative in {@link ArchiCodeParser#expr}.
 	 * @param ctx the parse tree
@@ -67,31 +138,43 @@ public interface ArchiCodeVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitIntExpr(ArchiCodeParser.IntExprContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code addExpr}
+	 * Visit a parse tree produced by the {@code addSubExpr}
 	 * labeled alternative in {@link ArchiCodeParser#expr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitAddExpr(ArchiCodeParser.AddExprContext ctx);
+	T visitAddSubExpr(ArchiCodeParser.AddSubExprContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code mulExpr}
+	 * Visit a parse tree produced by the {@code gtExpr}
 	 * labeled alternative in {@link ArchiCodeParser#expr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitMulExpr(ArchiCodeParser.MulExprContext ctx);
+	T visitGtExpr(ArchiCodeParser.GtExprContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code divExpr}
+	 * Visit a parse tree produced by the {@code funcCallExpr}
 	 * labeled alternative in {@link ArchiCodeParser#expr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitDivExpr(ArchiCodeParser.DivExprContext ctx);
+	T visitFuncCallExpr(ArchiCodeParser.FuncCallExprContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code subExpr}
+	 * Visit a parse tree produced by the {@code mulDivExpr}
 	 * labeled alternative in {@link ArchiCodeParser#expr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitSubExpr(ArchiCodeParser.SubExprContext ctx);
+	T visitMulDivExpr(ArchiCodeParser.MulDivExprContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ArchiCodeParser#exprList}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprList(ArchiCodeParser.ExprListContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ArchiCodeParser#type}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitType(ArchiCodeParser.TypeContext ctx);
 }
