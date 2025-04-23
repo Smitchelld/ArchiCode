@@ -32,10 +32,12 @@ public class ArchiCodeInterpreter extends ArchiCodeBaseVisitor<Void> {
         if (returned) return null;
         String var = ctx.VarName().getText();
         String value = ctx.expr().getText();
+
         if (value.startsWith("\"") && value.endsWith("\"")) {
             memory.put(var, value.substring(1, value.length() - 1));
         } else if (value.matches("\\d+")) {
-            memory.put(var, Integer.parseInt(value));
+            memory.put(var, Integer.valueOf(value));
+
         } else {
             memory.put(var, memory.getOrDefault(value, 0));
         }
@@ -44,7 +46,20 @@ public class ArchiCodeInterpreter extends ArchiCodeBaseVisitor<Void> {
 
     @Override
     public Void visitDefineStatement(ArchiCodeParser.DefineStatementContext ctx) {
-        return visitAssignStatement(ctx);
+        if (returned) return null;
+        String var = ctx.VarName().getText();
+        String value = ctx.expr().getText();
+
+        if (value.startsWith("\"") && value.endsWith("\"")) {
+            memory.put(var, value.substring(1, value.length() - 1));
+        } else if (value.matches("\\d+")) {
+            memory.put(var, Integer.valueOf(value));
+
+        } else {
+            memory.put(var, memory.getOrDefault(value, Integer.valueOf(0))
+            );
+        }
+        return null;
     }
 
     @Override
@@ -56,16 +71,4 @@ public class ArchiCodeInterpreter extends ArchiCodeBaseVisitor<Void> {
         return null;
     }
 
-    @Override
-    public Void visitReturnStatement(ArchiCodeParser.ReturnStatementContext ctx) {
-        returned = true;
-        String value = ctx.expr().getText();
-        if (value.matches("\\d+")) {
-            System.out.println("(Program zakończył się kodem: " + value + ")");
-        } else {
-            Object val = memory.getOrDefault(value, 0);
-            System.out.println("(Program zakończył się kodem: " + val + ")");
-        }
-        return null;
-    }
 }
