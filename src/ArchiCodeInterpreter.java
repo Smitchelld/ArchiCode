@@ -1,68 +1,71 @@
 import java.util.HashMap;
 import java.util.Map;
 
-public class ArchiCodeInterpreter extends ArchiCodeBaseVisitor<Object> {
-    public Map<String, Object> globalVariables = new HashMap<>();
-    public boolean isDeclarationPass = true;
+public class ArchiCodeInterpreter extends ArchiCodeBaseVisitor<Void> {
+    private final Map<String, Object> memory = new HashMap<>();
+    private boolean returned = false;
 
     @Override
-    public Object visitAssignment(ArchiCodeParser.AssignmentContext ctx) {
-        String varName = ctx.ID().getText();
-        if (isDeclarationPass) {
-            if (globalVariables.containsKey(varName)) {
-                throw new RuntimeException("Redeclaration of variable: " + varName);
-            }
-            globalVariables.put(varName, null);
-            return null;
+    public Void visitProgram(ArchiCodeParser.ProgramContext ctx) {
+        for (ArchiCodeParser.StatementContext stmt : ctx.statement()) {
+            if (returned) break;
+            visit(stmt);
+        }
+        return null;
+    }
+
+    @Override
+    public Void visitShowStatement(ArchiCodeParser.ShowStatementContext ctx) {
+        if (returned) return null;
+        String text = ctx.expr().getText();
+        if (text.startsWith("\"") && text.endsWith("\"")) {
+            System.out.println(text.substring(1, text.length() - 1));
         } else {
-            if (!globalVariables.containsKey(varName)) {
-                throw new RuntimeException("Undeclared variable: " + varName);
-            }
-            Object value = visit(ctx.expression());
-            globalVariables.put(varName, value);
-            return null;
+            Object value = memory.get(text);
+            System.out.println(value != null ? value : "<undefined " + text + ">");
         }
+        return null;
     }
 
     @Override
-    public Object visitExprStatement(ArchiCodeParser.ExprStatementContext ctx) {
-        return visit(ctx.expression());
+    public Void visitAssignStatement(ArchiCodeParser.AssignStatementContext ctx) {
+        if (returned) return null;
+        String var = ctx.VarName().getText();
+        String value = ctx.expr().getText();
+        if (value.startsWith("\"") && value.endsWith("\"")) {
+            memory.put(var, value.substring(1, value.length() - 1));
+        } else if (value.matches("\\d+")) {
+            memory.put(var, Integer.parseInt(value));
+        } else {
+            memory.put(var, memory.getOrDefault(value, 0));
+        }
+        return null;
     }
 
     @Override
-    public Object visitExpression(ArchiCodeParser.ExpressionContext ctx) {
-        if (ctx.op != null) {
-            Object left = visit(ctx.expression(0));
-            Object right = ctx.expression().size() > 1 ? visit(ctx.expression(1)) : null;
-            switch (ctx.op.getText()) {
-                case "+": return (Double) left + (Double) right;
-                case "-": return (Double) left - (Double) right;
-                case "*": return (Double) left * (Double) right;
-                case "/": return (Double) left / (Double) right;
-                case "==": return left.equals(right);
-                case "!=": return !left.equals(right);
-                case "<": return (Double) left < (Double) right;
-                case ">": return (Double) left > (Double) right;
-                case "and": return (Boolean) left && (Boolean) right;
-                case "or": return (Boolean) left || (Boolean) right;
-            }
-        }
+    public Void visitDefineStatement(ArchiCodeParser.DefineStatementContext ctx) {
+        return visitAssignStatement(ctx);
+    }
 
-        if (ctx.getChildCount() == 2 && ctx.getChild(0).getText().equals("not")) {
-            return !(Boolean) visit(ctx.expression(0));
+    @Override
+    public Void visitCoreStatement(ArchiCodeParser.CoreStatementContext ctx) {
+        for (var child : ctx.block().statement()) {
+            if (returned) break;
+            visit(child);
         }
+        return null;
+    }
 
-        if (ctx.NUMBER() != null) return Double.parseDouble(ctx.NUMBER().getText());
-        if (ctx.TRUE() != null) return true;
-        if (ctx.FALSE() != null) return false;
-        if (ctx.ID() != null) {
-            String varName = ctx.ID().getText();
-            if (!globalVariables.containsKey(varName)) {
-                throw new RuntimeException("Undeclared variable: " + varName);
-            }
-            return globalVariables.get(varName);
+    @Override
+    public Void visitReturnStatement(ArchiCodeParser.ReturnStatementContext ctx) {
+        returned = true;
+        String value = ctx.expr().getText();
+        if (value.matches("\\d+")) {
+            System.out.println("(Program zakończył się kodem: " + value + ")");
+        } else {
+            Object val = memory.getOrDefault(value, 0);
+            System.out.println("(Program zakończył się kodem: " + val + ")");
         }
-
-        return visit(ctx.expression(0));
+        return null;
     }
 }
