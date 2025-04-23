@@ -3,68 +3,68 @@ import java.util.Map;
 
 public class ArchiCodeInterpreter extends ArchiCodeBaseVisitor<Void> {
     private final Map<String, Object> memory = new HashMap<>();
-    private boolean returned = false;
 
     @Override
     public Void visitProgram(ArchiCodeParser.ProgramContext ctx) {
+        boolean coreExecuted = false;
+
         for (ArchiCodeParser.StatementContext stmt : ctx.statement()) {
-            if (returned) break;
-            visit(stmt);
+            if (stmt.coreStatement() != null) {
+                if (coreExecuted) {
+                    int line = stmt.getStart().getLine();
+                    System.err.println("Błąd (linia " + line + "): tylko jeden blok Core jest dozwolony.");
+                    System.exit(1);
+                }
+                coreExecuted = true;
+                visit(stmt);
+            } else if (stmt.blueprintStatement() != null) {
+
+            } else {
+                int line = stmt.getStart().getLine();
+                System.err.println("Błąd (linia " + line + "): instrukcja '" + stmt.getText() + "' znajduje się poza blokiem Core lub blueprint.");
+                System.exit(1);
+            }
         }
+
+        if (!coreExecuted) {
+            System.err.println("Błąd: program musi zawierać blok Core.");
+            System.exit(1);
+        }
+
         return null;
     }
 
     @Override
     public Void visitShowStatement(ArchiCodeParser.ShowStatementContext ctx) {
-        if (returned) return null;
-        String text = ctx.expr().getText();
-        if (text.startsWith("\"") && text.endsWith("\"")) {
-            System.out.println(text.substring(1, text.length() - 1));
-        } else {
-            Object value = memory.get(text);
-            System.out.println(value != null ? value : "<undefined " + text + ">");
-        }
-        return null;
-    }
-
-    @Override
-    public Void visitAssignStatement(ArchiCodeParser.AssignStatementContext ctx) {
-        if (returned) return null;
-        String var = ctx.VarName().getText();
-        String value = ctx.expr().getText();
-        if (value.startsWith("\"") && value.endsWith("\"")) {
-            memory.put(var, value.substring(1, value.length() - 1));
-        } else if (value.matches("\\d+")) {
-            memory.put(var, Integer.parseInt(value));
-        } else {
-            memory.put(var, memory.getOrDefault(value, 0));
-        }
+        Object value = visitExpr(ctx.expr());
+        System.out.println(value != null ? value : "<undefined>");
         return null;
     }
 
     @Override
     public Void visitDefineStatement(ArchiCodeParser.DefineStatementContext ctx) {
-        return visitAssignStatement(ctx);
-    }
-
-    @Override
-    public Void visitCoreStatement(ArchiCodeParser.CoreStatementContext ctx) {
-        for (var child : ctx.block().statement()) {
-            if (returned) break;
-            visit(child);
-        }
+        String var = ctx.VarName().getText();
+        Object value = visitExpr(ctx.expr());
+        memory.put(var, value);
         return null;
     }
 
     @Override
-    public Void visitReturnStatement(ArchiCodeParser.ReturnStatementContext ctx) {
-        returned = true;
-        String value = ctx.expr().getText();
-        if (value.matches("\\d+")) {
-            System.out.println("(Program zakończył się kodem: " + value + ")");
-        } else {
-            Object val = memory.getOrDefault(value, 0);
-            System.out.println("(Program zakończył się kodem: " + val + ")");
+    public Void visitAssignStatement(ArchiCodeParser.AssignStatementContext ctx) {
+        String var = ctx.VarName().getText();
+        Object value = visitExpr(ctx.expr());
+        memory.put(var, value);
+        return null;
+    }
+
+    private Object visitExpr(ArchiCodeParser.ExprContext ctx) {
+        if (ctx instanceof ArchiCodeParser.StringExprContext) {
+            String text = ctx.getText();
+            return text.substring(1, text.length() - 1); // usuń cudzysłowy
+        } else if (ctx instanceof ArchiCodeParser.IntExprContext) {
+            return Integer.parseInt(ctx.getText());
+        } else if (ctx instanceof ArchiCodeParser.VarExprContext) {
+            return memory.getOrDefault(ctx.getText(), "<undefined>");
         }
         return null;
     }

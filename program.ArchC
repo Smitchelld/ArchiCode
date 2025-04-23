@@ -1,8 +1,7 @@
 Core() delivers int return {
     show "Hello, ArchiCode"
     show "To działa!"
+    blad
     return = 0
 }
 
-show "Hello, ArchiCode"
-show "To działa a nie powinno!"
