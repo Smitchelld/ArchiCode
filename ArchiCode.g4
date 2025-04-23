@@ -112,3 +112,6 @@ INLINE_COMMENT
 WS
     : [ \t\r\n]+ -> skip
     ;
+returnStatement
+    : 'return' expr
+    ;
