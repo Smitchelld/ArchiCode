@@ -87,6 +87,16 @@ public interface ArchiCodeListener extends ParseTreeListener {
 	 */
 	void exitBlueprintStatement(ArchiCodeParser.BlueprintStatementContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link ArchiCodeParser#blueprintCallStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterBlueprintCallStatement(ArchiCodeParser.BlueprintCallStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ArchiCodeParser#blueprintCallStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitBlueprintCallStatement(ArchiCodeParser.BlueprintCallStatementContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link ArchiCodeParser#paramList}.
 	 * @param ctx the parse tree
 	 */
@@ -290,4 +300,14 @@ public interface ArchiCodeListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitType(ArchiCodeParser.TypeContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ArchiCodeParser#returnStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterReturnStatement(ArchiCodeParser.ReturnStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ArchiCodeParser#returnStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitReturnStatement(ArchiCodeParser.ReturnStatementContext ctx);
 }

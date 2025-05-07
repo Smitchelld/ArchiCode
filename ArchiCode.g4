@@ -10,6 +10,7 @@ statement
     | repeatStatement
     | checkStatement
     | blueprintStatement
+    | blueprintCallStatement
     | coreStatement
     ;
 
@@ -35,6 +36,10 @@ requestStatement
 
 blueprintStatement
     : 'blueprint' CapitalVarName '(' paramList? ')' 'delivers' VarName ('=' expr)? block
+    ;
+
+blueprintCallStatement
+    : CapitalVarName paramList?
     ;
 
 paramList
@@ -113,5 +118,7 @@ WS
     : [ \t\r\n]+ -> skip
     ;
 returnStatement
-    : 'return' expr
+    : 'return'
     ;
+
+

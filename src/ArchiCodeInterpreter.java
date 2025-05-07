@@ -44,6 +44,11 @@ public class ArchiCodeInterpreter extends ArchiCodeBaseVisitor<Void> {
     @Override
     public Void visitDefineStatement(ArchiCodeParser.DefineStatementContext ctx) {
         String var = ctx.VarName().getText();
+        if(memory.containsKey(var)) {
+            int line = ctx.expr().getStart().getLine();
+            System.err.println("Błąd (linia " + line + "): Zmienna \""+ var +"\" juz istnieje");
+            System.exit(1);
+        }
         Object value = visitExpr(ctx.expr());
         memory.put(var, value);
         return null;
@@ -52,6 +57,11 @@ public class ArchiCodeInterpreter extends ArchiCodeBaseVisitor<Void> {
     @Override
     public Void visitAssignStatement(ArchiCodeParser.AssignStatementContext ctx) {
         String var = ctx.VarName().getText();
+        if(!memory.containsKey(var)) {
+            int line = ctx.expr().getStart().getLine();
+            System.err.println("Błąd (linia " + line + "): Próba przypisania do nieistniejącej zmiennej");
+            System.exit(1);
+        }
         Object value = visitExpr(ctx.expr());
         memory.put(var, value);
         return null;

@@ -1,7 +1,7 @@
-Core() delivers int return {
+Core() delivers int sum {
+    define var = 4
     show "Hello, ArchiCode"
-    show "To działa!"
-    blad
-    return = 0
+    show var
 }
+
 

@@ -58,6 +58,12 @@ public interface ArchiCodeVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitBlueprintStatement(ArchiCodeParser.BlueprintStatementContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link ArchiCodeParser#blueprintCallStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBlueprintCallStatement(ArchiCodeParser.BlueprintCallStatementContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link ArchiCodeParser#paramList}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -177,4 +183,10 @@ public interface ArchiCodeVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitType(ArchiCodeParser.TypeContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ArchiCodeParser#returnStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitReturnStatement(ArchiCodeParser.ReturnStatementContext ctx);
 }

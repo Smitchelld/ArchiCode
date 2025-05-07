@@ -112,6 +112,18 @@ public class ArchiCodeBaseListener implements ArchiCodeListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterBlueprintCallStatement(ArchiCodeParser.BlueprintCallStatementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitBlueprintCallStatement(ArchiCodeParser.BlueprintCallStatementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterParamList(ArchiCodeParser.ParamListContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -323,6 +335,18 @@ public class ArchiCodeBaseListener implements ArchiCodeListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitType(ArchiCodeParser.TypeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterReturnStatement(ArchiCodeParser.ReturnStatementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitReturnStatement(ArchiCodeParser.ReturnStatementContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
