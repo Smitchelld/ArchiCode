@@ -1,11 +1,17 @@
 import java.util.HashMap;
 import java.util.Map;
 
-public class ArchiCodeInterpreter extends ArchiCodeBaseVisitor<Void> {
-    private final Map<String, Object> memory = new HashMap<>();
+public class ArchiCodeInterpreter extends ArchiCodeBaseVisitor<Object> {
+    private final Map<String, String> symbolTable;
+    private final Map<String, Variable> variables = new HashMap<>();
+
+    public ArchiCodeInterpreter(Map<String, String> symbolTable) {
+        this.symbolTable = symbolTable;
+    }
 
     @Override
     public Void visitProgram(ArchiCodeParser.ProgramContext ctx) {
+
         boolean coreExecuted = false;
 
         for (ArchiCodeParser.StatementContext stmt : ctx.statement()) {
@@ -36,46 +42,163 @@ public class ArchiCodeInterpreter extends ArchiCodeBaseVisitor<Void> {
 
     @Override
     public Void visitShowStatement(ArchiCodeParser.ShowStatementContext ctx) {
-        Object value = visitExpr(ctx.expr());
+        Object value = visit(ctx.expr());
         System.out.println(value != null ? value : "<undefined>");
         return null;
     }
 
     @Override
     public Void visitDefineStatement(ArchiCodeParser.DefineStatementContext ctx) {
-        String var = ctx.VarName().getText();
-        if(memory.containsKey(var)) {
-            int line = ctx.expr().getStart().getLine();
-            System.err.println("Błąd (linia " + line + "): Zmienna \""+ var +"\" juz istnieje");
+        String varName = ctx.VarName().getText();
+        if (variables.containsKey(varName)) {
+            int line = ctx.getStart().getLine();
+            System.err.println("Błąd (linia " + line + "): zmienna \"" + varName + "\" już istnieje.");
             System.exit(1);
         }
-        Object value = visitExpr(ctx.expr());
-        memory.put(var, value);
+
+        String declaredType = ctx.type() != null ? ctx.type().getText() : "auto";
+        Object value = visit(ctx.expr());
+
+        String actualType = inferType(value);
+        if (!declaredType.equals("auto") && !declaredType.equals(actualType)) {
+            int line = ctx.getStart().getLine();
+            System.err.println("Błąd(linia "+ line +"): niezgodność typów przy deklaracji zmiennej \"" + varName + "\". Oczekiwano: " + declaredType + ", otrzymano: " + actualType);
+            System.exit(1);
+        }
+
+        variables.put(varName, new Variable(VarType.fromString(actualType), value));
         return null;
     }
 
     @Override
     public Void visitAssignStatement(ArchiCodeParser.AssignStatementContext ctx) {
-        String var = ctx.VarName().getText();
-        if(!memory.containsKey(var)) {
-            int line = ctx.expr().getStart().getLine();
-            System.err.println("Błąd (linia " + line + "): Próba przypisania do nieistniejącej zmiennej");
+        String varName = ctx.VarName().getText();
+        if (!variables.containsKey(varName)) {
+            int line = ctx.getStart().getLine();
+            System.err.println("Błąd (linia " + line + "): zmienna \"" + varName + "\" nie została zadeklarowana.");
             System.exit(1);
         }
-        Object value = visitExpr(ctx.expr());
-        memory.put(var, value);
+
+        Object value = visit(ctx.expr());
+        Variable var = variables.get(varName);
+        VarType newType = VarType.fromString(inferType(value));
+
+        if (newType != var.getType()) {
+            int line = ctx.getStart().getLine();
+            System.err.println("Błąd (linia " + line + "): niezgodność typów przy przypisaniu do \"" + varName + "\". Oczekiwano: " + var.getType() + ", otrzymano: " + newType);
+            System.exit(1);
+        }
+
+        var.setValue(value);
         return null;
     }
 
-    private Object visitExpr(ArchiCodeParser.ExprContext ctx) {
-        if (ctx instanceof ArchiCodeParser.StringExprContext) {
-            String text = ctx.getText();
-            return text.substring(1, text.length() - 1); // usuń cudzysłowy
-        } else if (ctx instanceof ArchiCodeParser.IntExprContext) {
-            return Integer.parseInt(ctx.getText());
-        } else if (ctx instanceof ArchiCodeParser.VarExprContext) {
-            return memory.getOrDefault(ctx.getText(), "<undefined>");
+    @Override
+    public Object visitVarExpr(ArchiCodeParser.VarExprContext ctx) {
+        String varName = ctx.VarName().getText();
+        Variable var = variables.get(varName);
+        if (var == null) {
+            int line = ctx.getStart().getLine();
+            System.err.println("Błąd (linia " + line + "): zmienna \"" + varName + "\" nie została zadeklarowana.");
+            System.exit(1);
         }
+        return var.getValue();
+    }
+
+    @Override
+    public Object visitAddSubExpr(ArchiCodeParser.AddSubExprContext ctx) {
+        Object left = visit(ctx.expr(0));
+        Object right = visit(ctx.expr(1));
+        String op = ctx.op.getText();
+
+        if (left instanceof Integer && right instanceof Integer) {
+            int a = (Integer) left;
+            int b = (Integer) right;
+            return op.equals("+") ? a + b : a - b;
+        }
+        int line = ctx.getStart().getLine();
+        System.err.println("Błąd (linia " + line + "): Nieobsługiwane typy dla " + op);
+        System.exit(1);
         return null;
+    }
+
+    @Override
+    public Object visitMulDivExpr(ArchiCodeParser.MulDivExprContext ctx) {
+        Object left = visit(ctx.expr(0));
+        Object right = visit(ctx.expr(1));
+        String op = ctx.op.getText();
+
+        if (left instanceof Integer && right instanceof Integer) {
+            int a = (Integer) left;
+            int b = (Integer) right;
+            return op.equals("*") ? a * b : a / b;
+        }
+
+        int line = ctx.getStart().getLine();
+        System.err.println("Błąd (linia " + line + "): Nieobsługiwane typy dla " + op);
+        System.exit(1);
+        return null;
+    }
+
+    @Override
+    public Object visitEqExpr(ArchiCodeParser.EqExprContext ctx) {
+        Object a = visit(ctx.expr(0));
+        Object b = visit(ctx.expr(1));
+        return a.equals(b);
+    }
+
+    @Override
+    public Object visitLtExpr(ArchiCodeParser.LtExprContext ctx) {
+        Object a = visit(ctx.expr(0));
+        Object b = visit(ctx.expr(1));
+        return ((Integer) a) < ((Integer) b);
+    }
+
+    @Override
+    public Object visitGtExpr(ArchiCodeParser.GtExprContext ctx) {
+        Object a = visit(ctx.expr(0));
+        Object b = visit(ctx.expr(1));
+        return ((Integer) a) > ((Integer) b);
+    }
+
+    @Override
+    public Object visitLogicExpr(ArchiCodeParser.LogicExprContext ctx) {
+        boolean left = (Boolean) visit(ctx.expr(0));
+        boolean right = (Boolean) visit(ctx.expr(1));
+        return ctx.op.getText().equals("and") ? left && right : left || right;
+    }
+
+    @Override
+    public Object visitNotExpr(ArchiCodeParser.NotExprContext ctx) {
+        return !(Boolean) visit(ctx.expr());
+    }
+
+    @Override
+    public Object visitBoolTrueExpr(ArchiCodeParser.BoolTrueExprContext ctx) {
+        return true;
+    }
+
+    @Override
+    public Object visitBoolFalseExpr(ArchiCodeParser.BoolFalseExprContext ctx) {
+        return false;
+    }
+
+    @Override
+    public Object visitIntExpr(ArchiCodeParser.IntExprContext ctx) {
+        return Integer.parseInt(ctx.getText());
+    }
+
+    @Override
+    public Object visitStringExpr(ArchiCodeParser.StringExprContext ctx) {
+        String text = ctx.getText();
+        return text.substring(1, text.length() - 1); // usuń cudzysłowy
+    }
+
+    private String inferType(Object value) {
+        if (value instanceof Integer) return "int";
+        if (value instanceof Boolean) return "bool";
+        if (value instanceof String) return "string";
+        if (value instanceof Float) return "float";
+        return "unknown";
     }
 }

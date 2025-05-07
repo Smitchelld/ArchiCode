@@ -20,7 +20,11 @@ public class Main {
             return;
         }
 
-        ArchiCodeInterpreter interpreter = new ArchiCodeInterpreter();
+        ParseTreeWalker walker = new ParseTreeWalker();
+        VariableCollector symbolListener = new VariableCollector();
+        walker.walk(symbolListener, tree);
+
+        ArchiCodeInterpreter interpreter = new ArchiCodeInterpreter(symbolListener.getSymbolTable());
         interpreter.visit(tree);
     }
 }

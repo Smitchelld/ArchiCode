@@ -20,20 +20,22 @@ public class ArchiCodeParser extends Parser {
 		T__9=10, T__10=11, T__11=12, T__12=13, T__13=14, T__14=15, T__15=16, T__16=17, 
 		T__17=18, T__18=19, T__19=20, T__20=21, T__21=22, T__22=23, T__23=24, 
 		T__24=25, T__25=26, T__26=27, T__27=28, T__28=29, T__29=30, T__30=31, 
-		T__31=32, VarName=33, CapitalVarName=34, INT=35, STRING=36, LINE_COMMENT=37, 
-		MULTILINE_COMMENT=38, INLINE_COMMENT=39, WS=40;
+		T__31=32, T__32=33, T__33=34, T__34=35, T__35=36, T__36=37, T__37=38, 
+		T__38=39, T__39=40, T__40=41, T__41=42, T__42=43, T__43=44, VarName=45, 
+		CapitalVarName=46, INT=47, CHAR=48, STRING=49, INLINE_COMMENT=50, LINE_COMMENT=51, 
+		MULTILINE_COMMENT=52, WS=53;
 	public static final int
 		RULE_program = 0, RULE_statement = 1, RULE_coreStatement = 2, RULE_showStatement = 3, 
-		RULE_defineStatement = 4, RULE_assignStatement = 5, RULE_requestStatement = 6, 
-		RULE_blueprintStatement = 7, RULE_blueprintCallStatement = 8, RULE_paramList = 9, 
-		RULE_param = 10, RULE_repeatStatement = 11, RULE_checkStatement = 12, 
-		RULE_block = 13, RULE_expr = 14, RULE_exprList = 15, RULE_type = 16, RULE_returnStatement = 17;
+		RULE_defineStatement = 4, RULE_defineCollectionStatement = 5, RULE_assignStatement = 6, 
+		RULE_requestStatement = 7, RULE_blueprintStatement = 8, RULE_blueprintCallStatement = 9, 
+		RULE_paramList = 10, RULE_param = 11, RULE_repeatStatement = 12, RULE_checkStatement = 13, 
+		RULE_block = 14, RULE_expr = 15, RULE_exprList = 16, RULE_type = 17;
 	private static String[] makeRuleNames() {
 		return new String[] {
 			"program", "statement", "coreStatement", "showStatement", "defineStatement", 
-			"assignStatement", "requestStatement", "blueprintStatement", "blueprintCallStatement", 
-			"paramList", "param", "repeatStatement", "checkStatement", "block", "expr", 
-			"exprList", "type", "returnStatement"
+			"defineCollectionStatement", "assignStatement", "requestStatement", "blueprintStatement", 
+			"blueprintCallStatement", "paramList", "param", "repeatStatement", "checkStatement", 
+			"block", "expr", "exprList", "type"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
@@ -41,10 +43,11 @@ public class ArchiCodeParser extends Parser {
 	private static String[] makeLiteralNames() {
 		return new String[] {
 			null, "'Core'", "'('", "')'", "'delivers'", "'show'", "'define'", "'='", 
-			"'request'", "'blueprint'", "','", "'repeat'", "'until'", "'for'", "'in'", 
-			"'check'", "'then'", "'otherwise'", "'{'", "'}'", "'*'", "'/'", "'+'", 
-			"'-'", "'=='", "'<'", "'>'", "'int'", "'float'", "'bool'", "'char'", 
-			"'string'", "'return'"
+			"'box'", "'chain'", "'catalog'", "'['", "']'", "'request'", "'blueprint'", 
+			"';'", "','", "'repeat'", "'until'", "'for'", "'in'", "'check'", "'then'", 
+			"'otherwise'", "'{'", "'}'", "'not'", "'and'", "'or'", "'*'", "'/'", 
+			"'+'", "'-'", "'=='", "'<'", "'>'", "'true'", "'false'", "'step'", "'@'", 
+			"'int'", "'float'", "'bool'", "'char'", "'string'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
@@ -52,8 +55,9 @@ public class ArchiCodeParser extends Parser {
 		return new String[] {
 			null, null, null, null, null, null, null, null, null, null, null, null, 
 			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
 			null, null, null, null, null, null, null, null, null, "VarName", "CapitalVarName", 
-			"INT", "STRING", "LINE_COMMENT", "MULTILINE_COMMENT", "INLINE_COMMENT", 
+			"INT", "CHAR", "STRING", "INLINE_COMMENT", "LINE_COMMENT", "MULTILINE_COMMENT", 
 			"WS"
 		};
 	}
@@ -156,7 +160,7 @@ public class ArchiCodeParser extends Parser {
 				setState(39); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & 25769839458L) != 0) );
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & 105553118519394L) != 0) );
 			setState(41);
 			match(EOF);
 			}
@@ -179,6 +183,9 @@ public class ArchiCodeParser extends Parser {
 		}
 		public DefineStatementContext defineStatement() {
 			return getRuleContext(DefineStatementContext.class,0);
+		}
+		public DefineCollectionStatementContext defineCollectionStatement() {
+			return getRuleContext(DefineCollectionStatementContext.class,0);
 		}
 		public AssignStatementContext assignStatement() {
 			return getRuleContext(AssignStatementContext.class,0);
@@ -224,74 +231,79 @@ public class ArchiCodeParser extends Parser {
 		StatementContext _localctx = new StatementContext(_ctx, getState());
 		enterRule(_localctx, 2, RULE_statement);
 		try {
-			setState(52);
+			setState(53);
 			_errHandler.sync(this);
-			switch (_input.LA(1)) {
-			case T__4:
+			switch ( getInterpreter().adaptivePredict(_input,1,_ctx) ) {
+			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(43);
 				showStatement();
 				}
 				break;
-			case T__5:
+			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(44);
 				defineStatement();
 				}
 				break;
-			case VarName:
+			case 3:
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(45);
-				assignStatement();
+				defineCollectionStatement();
 				}
 				break;
-			case T__7:
+			case 4:
 				enterOuterAlt(_localctx, 4);
 				{
 				setState(46);
-				requestStatement();
+				assignStatement();
 				}
 				break;
-			case T__10:
+			case 5:
 				enterOuterAlt(_localctx, 5);
 				{
 				setState(47);
-				repeatStatement();
+				requestStatement();
 				}
 				break;
-			case T__14:
+			case 6:
 				enterOuterAlt(_localctx, 6);
 				{
 				setState(48);
-				checkStatement();
+				repeatStatement();
 				}
 				break;
-			case T__8:
+			case 7:
 				enterOuterAlt(_localctx, 7);
 				{
 				setState(49);
-				blueprintStatement();
+				checkStatement();
 				}
 				break;
-			case CapitalVarName:
+			case 8:
 				enterOuterAlt(_localctx, 8);
 				{
 				setState(50);
-				blueprintCallStatement();
+				blueprintStatement();
 				}
 				break;
-			case T__0:
+			case 9:
 				enterOuterAlt(_localctx, 9);
 				{
 				setState(51);
+				blueprintCallStatement();
+				}
+				break;
+			case 10:
+				enterOuterAlt(_localctx, 10);
+				{
+				setState(52);
 				coreStatement();
 				}
 				break;
-			default:
-				throw new NoViableAltException(this);
 			}
 		}
 		catch (RecognitionException re) {
@@ -343,29 +355,29 @@ public class ArchiCodeParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(54);
-			match(T__0);
 			setState(55);
+			match(T__0);
+			setState(56);
 			match(T__1);
-			setState(57);
+			setState(58);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 12750684160L) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 69269232549888L) != 0)) {
 				{
-				setState(56);
+				setState(57);
 				paramList();
 				}
 			}
 
-			setState(59);
-			match(T__2);
 			setState(60);
-			match(T__3);
+			match(T__2);
 			setState(61);
-			type();
+			match(T__3);
 			setState(62);
-			match(VarName);
+			type();
 			setState(63);
+			match(VarName);
+			setState(64);
 			block();
 			}
 		}
@@ -410,9 +422,9 @@ public class ArchiCodeParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(65);
-			match(T__4);
 			setState(66);
+			match(T__4);
+			setState(67);
 			expr(0);
 			}
 		}
@@ -462,24 +474,117 @@ public class ArchiCodeParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(68);
+			setState(69);
 			match(T__5);
-			setState(70);
+			setState(71);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 4160749568L) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 34084860461056L) != 0)) {
 				{
-				setState(69);
+				setState(70);
 				type();
 				}
 			}
 
-			setState(72);
-			match(VarName);
 			setState(73);
-			match(T__6);
+			match(VarName);
 			setState(74);
+			match(T__6);
+			setState(75);
 			expr(0);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	@SuppressWarnings("CheckReturnValue")
+	public static class DefineCollectionStatementContext extends ParserRuleContext {
+		public TypeContext type() {
+			return getRuleContext(TypeContext.class,0);
+		}
+		public TerminalNode VarName() { return getToken(ArchiCodeParser.VarName, 0); }
+		public List<ExprContext> expr() {
+			return getRuleContexts(ExprContext.class);
+		}
+		public ExprContext expr(int i) {
+			return getRuleContext(ExprContext.class,i);
+		}
+		public DefineCollectionStatementContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_defineCollectionStatement; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof ArchiCodeListener ) ((ArchiCodeListener)listener).enterDefineCollectionStatement(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof ArchiCodeListener ) ((ArchiCodeListener)listener).exitDefineCollectionStatement(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ArchiCodeVisitor ) return ((ArchiCodeVisitor<? extends T>)visitor).visitDefineCollectionStatement(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final DefineCollectionStatementContext defineCollectionStatement() throws RecognitionException {
+		DefineCollectionStatementContext _localctx = new DefineCollectionStatementContext(_ctx, getState());
+		enterRule(_localctx, 10, RULE_defineCollectionStatement);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(77);
+			match(T__5);
+			setState(78);
+			_la = _input.LA(1);
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 1792L) != 0)) ) {
+			_errHandler.recoverInline(this);
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
+				consume();
+			}
+			setState(79);
+			type();
+			setState(80);
+			match(VarName);
+			setState(85);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			if (_la==T__10) {
+				{
+				setState(81);
+				match(T__10);
+				setState(82);
+				expr(0);
+				setState(83);
+				match(T__11);
+				}
+			}
+
+			setState(89);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			if (_la==T__6) {
+				{
+				setState(87);
+				match(T__6);
+				setState(88);
+				expr(0);
+				}
+			}
+
 			}
 		}
 		catch (RecognitionException re) {
@@ -520,15 +625,15 @@ public class ArchiCodeParser extends Parser {
 
 	public final AssignStatementContext assignStatement() throws RecognitionException {
 		AssignStatementContext _localctx = new AssignStatementContext(_ctx, getState());
-		enterRule(_localctx, 10, RULE_assignStatement);
+		enterRule(_localctx, 12, RULE_assignStatement);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(76);
+			setState(91);
 			match(VarName);
-			setState(77);
+			setState(92);
 			match(T__6);
-			setState(78);
+			setState(93);
 			expr(0);
 			}
 		}
@@ -567,13 +672,13 @@ public class ArchiCodeParser extends Parser {
 
 	public final RequestStatementContext requestStatement() throws RecognitionException {
 		RequestStatementContext _localctx = new RequestStatementContext(_ctx, getState());
-		enterRule(_localctx, 12, RULE_requestStatement);
+		enterRule(_localctx, 14, RULE_requestStatement);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(80);
-			match(T__7);
-			setState(81);
+			setState(95);
+			match(T__12);
+			setState(96);
 			match(VarName);
 			}
 		}
@@ -591,6 +696,9 @@ public class ArchiCodeParser extends Parser {
 	@SuppressWarnings("CheckReturnValue")
 	public static class BlueprintStatementContext extends ParserRuleContext {
 		public TerminalNode CapitalVarName() { return getToken(ArchiCodeParser.CapitalVarName, 0); }
+		public TypeContext type() {
+			return getRuleContext(TypeContext.class,0);
+		}
 		public TerminalNode VarName() { return getToken(ArchiCodeParser.VarName, 0); }
 		public BlockContext block() {
 			return getRuleContext(BlockContext.class,0);
@@ -622,46 +730,48 @@ public class ArchiCodeParser extends Parser {
 
 	public final BlueprintStatementContext blueprintStatement() throws RecognitionException {
 		BlueprintStatementContext _localctx = new BlueprintStatementContext(_ctx, getState());
-		enterRule(_localctx, 14, RULE_blueprintStatement);
+		enterRule(_localctx, 16, RULE_blueprintStatement);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(83);
-			match(T__8);
-			setState(84);
+			setState(98);
+			match(T__13);
+			setState(99);
 			match(CapitalVarName);
-			setState(85);
+			setState(100);
 			match(T__1);
-			setState(87);
+			setState(102);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 12750684160L) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 69269232549888L) != 0)) {
 				{
-				setState(86);
+				setState(101);
 				paramList();
 				}
 			}
 
-			setState(89);
+			setState(104);
 			match(T__2);
-			setState(90);
+			setState(105);
 			match(T__3);
-			setState(91);
+			setState(106);
+			type();
+			setState(107);
 			match(VarName);
-			setState(94);
+			setState(110);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==T__6) {
 				{
-				setState(92);
+				setState(108);
 				match(T__6);
-				setState(93);
+				setState(109);
 				expr(0);
 				}
 			}
 
-			setState(96);
+			setState(112);
 			block();
 			}
 		}
@@ -679,8 +789,11 @@ public class ArchiCodeParser extends Parser {
 	@SuppressWarnings("CheckReturnValue")
 	public static class BlueprintCallStatementContext extends ParserRuleContext {
 		public TerminalNode CapitalVarName() { return getToken(ArchiCodeParser.CapitalVarName, 0); }
-		public ParamListContext paramList() {
-			return getRuleContext(ParamListContext.class,0);
+		public List<ExprContext> expr() {
+			return getRuleContexts(ExprContext.class);
+		}
+		public ExprContext expr(int i) {
+			return getRuleContext(ExprContext.class,i);
 		}
 		public BlueprintCallStatementContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -703,22 +816,44 @@ public class ArchiCodeParser extends Parser {
 
 	public final BlueprintCallStatementContext blueprintCallStatement() throws RecognitionException {
 		BlueprintCallStatementContext _localctx = new BlueprintCallStatementContext(_ctx, getState());
-		enterRule(_localctx, 16, RULE_blueprintCallStatement);
+		enterRule(_localctx, 18, RULE_blueprintCallStatement);
+		int _la;
 		try {
+			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(98);
+			setState(114);
 			match(CapitalVarName);
-			setState(100);
+			setState(116); 
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,6,_ctx) ) {
-			case 1:
-				{
-				setState(99);
-				paramList();
+			_alt = 1;
+			do {
+				switch (_alt) {
+				case 1:
+					{
+					{
+					setState(115);
+					expr(0);
+					}
+					}
+					break;
+				default:
+					throw new NoViableAltException(this);
 				}
-				break;
+				setState(118); 
+				_errHandler.sync(this);
+				_alt = getInterpreter().adaptivePredict(_input,8,_ctx);
+			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
+			setState(121);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			if (_la==T__14) {
+				{
+				setState(120);
+				match(T__14);
+				}
 			}
+
 			}
 		}
 		catch (RecognitionException re) {
@@ -761,26 +896,26 @@ public class ArchiCodeParser extends Parser {
 
 	public final ParamListContext paramList() throws RecognitionException {
 		ParamListContext _localctx = new ParamListContext(_ctx, getState());
-		enterRule(_localctx, 18, RULE_paramList);
+		enterRule(_localctx, 20, RULE_paramList);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(102);
+			setState(123);
 			param();
-			setState(107);
+			setState(128);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (_la==T__9) {
+			while (_la==T__15) {
 				{
 				{
-				setState(103);
-				match(T__9);
-				setState(104);
+				setState(124);
+				match(T__15);
+				setState(125);
 				param();
 				}
 				}
-				setState(109);
+				setState(130);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -824,22 +959,22 @@ public class ArchiCodeParser extends Parser {
 
 	public final ParamContext param() throws RecognitionException {
 		ParamContext _localctx = new ParamContext(_ctx, getState());
-		enterRule(_localctx, 20, RULE_param);
+		enterRule(_localctx, 22, RULE_param);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(111);
+			setState(132);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 4160749568L) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 34084860461056L) != 0)) {
 				{
-				setState(110);
+				setState(131);
 				type();
 				}
 			}
 
-			setState(113);
+			setState(134);
 			match(VarName);
 			}
 		}
@@ -937,20 +1072,20 @@ public class ArchiCodeParser extends Parser {
 
 	public final RepeatStatementContext repeatStatement() throws RecognitionException {
 		RepeatStatementContext _localctx = new RepeatStatementContext(_ctx, getState());
-		enterRule(_localctx, 22, RULE_repeatStatement);
+		enterRule(_localctx, 24, RULE_repeatStatement);
 		try {
-			setState(129);
+			setState(150);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,9,_ctx) ) {
+			switch ( getInterpreter().adaptivePredict(_input,12,_ctx) ) {
 			case 1:
 				_localctx = new RepeatFixedContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(115);
-				match(T__10);
-				setState(116);
+				setState(136);
+				match(T__16);
+				setState(137);
 				match(INT);
-				setState(117);
+				setState(138);
 				block();
 				}
 				break;
@@ -958,13 +1093,13 @@ public class ArchiCodeParser extends Parser {
 				_localctx = new RepeatUntilContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(118);
-				match(T__10);
-				setState(119);
-				match(T__11);
-				setState(120);
+				setState(139);
+				match(T__16);
+				setState(140);
+				match(T__17);
+				setState(141);
 				expr(0);
-				setState(121);
+				setState(142);
 				block();
 				}
 				break;
@@ -972,17 +1107,17 @@ public class ArchiCodeParser extends Parser {
 				_localctx = new RepeatForContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(123);
-				match(T__10);
-				setState(124);
-				match(T__12);
-				setState(125);
+				setState(144);
+				match(T__16);
+				setState(145);
+				match(T__18);
+				setState(146);
 				match(VarName);
-				setState(126);
-				match(T__13);
-				setState(127);
+				setState(147);
+				match(T__19);
+				setState(148);
 				match(VarName);
-				setState(128);
+				setState(149);
 				block();
 				}
 				break;
@@ -1034,38 +1169,38 @@ public class ArchiCodeParser extends Parser {
 
 	public final CheckStatementContext checkStatement() throws RecognitionException {
 		CheckStatementContext _localctx = new CheckStatementContext(_ctx, getState());
-		enterRule(_localctx, 24, RULE_checkStatement);
+		enterRule(_localctx, 26, RULE_checkStatement);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(131);
-			match(T__14);
-			setState(132);
+			setState(152);
+			match(T__20);
+			setState(153);
 			expr(0);
-			setState(133);
-			match(T__15);
-			setState(134);
+			setState(154);
+			match(T__21);
+			setState(155);
 			block();
-			setState(140);
+			setState(161);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if (_la==T__16) {
+			if (_la==T__22) {
 				{
-				setState(135);
-				match(T__16);
-				setState(138);
+				setState(156);
+				match(T__22);
+				setState(159);
 				_errHandler.sync(this);
 				switch (_input.LA(1)) {
-				case T__14:
+				case T__20:
 					{
-					setState(136);
+					setState(157);
 					checkStatement();
 					}
 					break;
-				case T__17:
+				case T__23:
 					{
-					setState(137);
+					setState(158);
 					block();
 					}
 					break;
@@ -1117,29 +1252,29 @@ public class ArchiCodeParser extends Parser {
 
 	public final BlockContext block() throws RecognitionException {
 		BlockContext _localctx = new BlockContext(_ctx, getState());
-		enterRule(_localctx, 26, RULE_block);
+		enterRule(_localctx, 28, RULE_block);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(142);
-			match(T__17);
-			setState(146);
+			setState(163);
+			match(T__23);
+			setState(167);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 25769839458L) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 105553118519394L) != 0)) {
 				{
 				{
-				setState(143);
+				setState(164);
 				statement();
 				}
 				}
-				setState(148);
+				setState(169);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(149);
-			match(T__18);
+			setState(170);
+			match(T__24);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1166,84 +1301,20 @@ public class ArchiCodeParser extends Parser {
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
-	public static class StringExprContext extends ExprContext {
-		public TerminalNode STRING() { return getToken(ArchiCodeParser.STRING, 0); }
-		public StringExprContext(ExprContext ctx) { copyFrom(ctx); }
+	public static class CharExprContext extends ExprContext {
+		public TerminalNode CHAR() { return getToken(ArchiCodeParser.CHAR, 0); }
+		public CharExprContext(ExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ArchiCodeListener ) ((ArchiCodeListener)listener).enterStringExpr(this);
+			if ( listener instanceof ArchiCodeListener ) ((ArchiCodeListener)listener).enterCharExpr(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ArchiCodeListener ) ((ArchiCodeListener)listener).exitStringExpr(this);
+			if ( listener instanceof ArchiCodeListener ) ((ArchiCodeListener)listener).exitCharExpr(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ArchiCodeVisitor ) return ((ArchiCodeVisitor<? extends T>)visitor).visitStringExpr(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	@SuppressWarnings("CheckReturnValue")
-	public static class VarExprContext extends ExprContext {
-		public TerminalNode VarName() { return getToken(ArchiCodeParser.VarName, 0); }
-		public VarExprContext(ExprContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ArchiCodeListener ) ((ArchiCodeListener)listener).enterVarExpr(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ArchiCodeListener ) ((ArchiCodeListener)listener).exitVarExpr(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ArchiCodeVisitor ) return ((ArchiCodeVisitor<? extends T>)visitor).visitVarExpr(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	@SuppressWarnings("CheckReturnValue")
-	public static class EqExprContext extends ExprContext {
-		public List<ExprContext> expr() {
-			return getRuleContexts(ExprContext.class);
-		}
-		public ExprContext expr(int i) {
-			return getRuleContext(ExprContext.class,i);
-		}
-		public EqExprContext(ExprContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ArchiCodeListener ) ((ArchiCodeListener)listener).enterEqExpr(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ArchiCodeListener ) ((ArchiCodeListener)listener).exitEqExpr(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ArchiCodeVisitor ) return ((ArchiCodeVisitor<? extends T>)visitor).visitEqExpr(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	@SuppressWarnings("CheckReturnValue")
-	public static class LtExprContext extends ExprContext {
-		public List<ExprContext> expr() {
-			return getRuleContexts(ExprContext.class);
-		}
-		public ExprContext expr(int i) {
-			return getRuleContext(ExprContext.class,i);
-		}
-		public LtExprContext(ExprContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ArchiCodeListener ) ((ArchiCodeListener)listener).enterLtExpr(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ArchiCodeListener ) ((ArchiCodeListener)listener).exitLtExpr(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ArchiCodeVisitor ) return ((ArchiCodeVisitor<? extends T>)visitor).visitLtExpr(this);
+			if ( visitor instanceof ArchiCodeVisitor ) return ((ArchiCodeVisitor<? extends T>)visitor).visitCharExpr(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1313,10 +1384,25 @@ public class ArchiCodeParser extends Parser {
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
-	public static class FuncCallExprContext extends ExprContext {
-		public ExprContext expr() {
-			return getRuleContext(ExprContext.class,0);
+	public static class BoolFalseExprContext extends ExprContext {
+		public BoolFalseExprContext(ExprContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof ArchiCodeListener ) ((ArchiCodeListener)listener).enterBoolFalseExpr(this);
 		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof ArchiCodeListener ) ((ArchiCodeListener)listener).exitBoolFalseExpr(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ArchiCodeVisitor ) return ((ArchiCodeVisitor<? extends T>)visitor).visitBoolFalseExpr(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
+	public static class FuncCallExprContext extends ExprContext {
+		public TerminalNode CapitalVarName() { return getToken(ArchiCodeParser.CapitalVarName, 0); }
 		public ExprListContext exprList() {
 			return getRuleContext(ExprListContext.class,0);
 		}
@@ -1332,6 +1418,173 @@ public class ArchiCodeParser extends Parser {
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof ArchiCodeVisitor ) return ((ArchiCodeVisitor<? extends T>)visitor).visitFuncCallExpr(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
+	public static class BoolTrueExprContext extends ExprContext {
+		public BoolTrueExprContext(ExprContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof ArchiCodeListener ) ((ArchiCodeListener)listener).enterBoolTrueExpr(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof ArchiCodeListener ) ((ArchiCodeListener)listener).exitBoolTrueExpr(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ArchiCodeVisitor ) return ((ArchiCodeVisitor<? extends T>)visitor).visitBoolTrueExpr(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
+	public static class StringExprContext extends ExprContext {
+		public TerminalNode STRING() { return getToken(ArchiCodeParser.STRING, 0); }
+		public StringExprContext(ExprContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof ArchiCodeListener ) ((ArchiCodeListener)listener).enterStringExpr(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof ArchiCodeListener ) ((ArchiCodeListener)listener).exitStringExpr(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ArchiCodeVisitor ) return ((ArchiCodeVisitor<? extends T>)visitor).visitStringExpr(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
+	public static class VarExprContext extends ExprContext {
+		public TerminalNode VarName() { return getToken(ArchiCodeParser.VarName, 0); }
+		public VarExprContext(ExprContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof ArchiCodeListener ) ((ArchiCodeListener)listener).enterVarExpr(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof ArchiCodeListener ) ((ArchiCodeListener)listener).exitVarExpr(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ArchiCodeVisitor ) return ((ArchiCodeVisitor<? extends T>)visitor).visitVarExpr(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
+	public static class FuncCallNoParensExprContext extends ExprContext {
+		public TerminalNode CapitalVarName() { return getToken(ArchiCodeParser.CapitalVarName, 0); }
+		public List<ExprContext> expr() {
+			return getRuleContexts(ExprContext.class);
+		}
+		public ExprContext expr(int i) {
+			return getRuleContext(ExprContext.class,i);
+		}
+		public FuncCallNoParensExprContext(ExprContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof ArchiCodeListener ) ((ArchiCodeListener)listener).enterFuncCallNoParensExpr(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof ArchiCodeListener ) ((ArchiCodeListener)listener).exitFuncCallNoParensExpr(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ArchiCodeVisitor ) return ((ArchiCodeVisitor<? extends T>)visitor).visitFuncCallNoParensExpr(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
+	public static class EqExprContext extends ExprContext {
+		public List<ExprContext> expr() {
+			return getRuleContexts(ExprContext.class);
+		}
+		public ExprContext expr(int i) {
+			return getRuleContext(ExprContext.class,i);
+		}
+		public EqExprContext(ExprContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof ArchiCodeListener ) ((ArchiCodeListener)listener).enterEqExpr(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof ArchiCodeListener ) ((ArchiCodeListener)listener).exitEqExpr(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ArchiCodeVisitor ) return ((ArchiCodeVisitor<? extends T>)visitor).visitEqExpr(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
+	public static class LtExprContext extends ExprContext {
+		public List<ExprContext> expr() {
+			return getRuleContexts(ExprContext.class);
+		}
+		public ExprContext expr(int i) {
+			return getRuleContext(ExprContext.class,i);
+		}
+		public LtExprContext(ExprContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof ArchiCodeListener ) ((ArchiCodeListener)listener).enterLtExpr(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof ArchiCodeListener ) ((ArchiCodeListener)listener).exitLtExpr(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ArchiCodeVisitor ) return ((ArchiCodeVisitor<? extends T>)visitor).visitLtExpr(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
+	public static class NotExprContext extends ExprContext {
+		public ExprContext expr() {
+			return getRuleContext(ExprContext.class,0);
+		}
+		public NotExprContext(ExprContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof ArchiCodeListener ) ((ArchiCodeListener)listener).enterNotExpr(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof ArchiCodeListener ) ((ArchiCodeListener)listener).exitNotExpr(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ArchiCodeVisitor ) return ((ArchiCodeVisitor<? extends T>)visitor).visitNotExpr(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
+	public static class LogicExprContext extends ExprContext {
+		public Token op;
+		public List<ExprContext> expr() {
+			return getRuleContexts(ExprContext.class);
+		}
+		public ExprContext expr(int i) {
+			return getRuleContext(ExprContext.class,i);
+		}
+		public LogicExprContext(ExprContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof ArchiCodeListener ) ((ArchiCodeListener)listener).enterLogicExpr(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof ArchiCodeListener ) ((ArchiCodeListener)listener).exitLogicExpr(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ArchiCodeVisitor ) return ((ArchiCodeVisitor<? extends T>)visitor).visitLogicExpr(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1359,6 +1612,24 @@ public class ArchiCodeParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
+	@SuppressWarnings("CheckReturnValue")
+	public static class StepExprContext extends ExprContext {
+		public TerminalNode INT() { return getToken(ArchiCodeParser.INT, 0); }
+		public StepExprContext(ExprContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof ArchiCodeListener ) ((ArchiCodeListener)listener).enterStepExpr(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof ArchiCodeListener ) ((ArchiCodeListener)listener).exitStepExpr(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ArchiCodeVisitor ) return ((ArchiCodeVisitor<? extends T>)visitor).visitStepExpr(this);
+			else return visitor.visitChildren(this);
+		}
+	}
 
 	public final ExprContext expr() throws RecognitionException {
 		return expr(0);
@@ -1369,69 +1640,209 @@ public class ArchiCodeParser extends Parser {
 		int _parentState = getState();
 		ExprContext _localctx = new ExprContext(_ctx, _parentState);
 		ExprContext _prevctx = _localctx;
-		int _startState = 28;
-		enterRecursionRule(_localctx, 28, RULE_expr, _p);
+		int _startState = 30;
+		enterRecursionRule(_localctx, 30, RULE_expr, _p);
 		int _la;
 		try {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(155);
+			setState(201);
 			_errHandler.sync(this);
-			switch (_input.LA(1)) {
-			case INT:
+			switch ( getInterpreter().adaptivePredict(_input,20,_ctx) ) {
+			case 1:
+				{
+				_localctx = new NotExprContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
+
+				setState(173);
+				match(T__25);
+				setState(174);
+				expr(16);
+				}
+				break;
+			case 2:
+				{
+				_localctx = new FuncCallExprContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
+				setState(175);
+				match(CapitalVarName);
+				setState(176);
+				match(T__1);
+				setState(178);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 1091196638199808L) != 0)) {
+					{
+					setState(177);
+					exprList();
+					}
+				}
+
+				setState(180);
+				match(T__2);
+				}
+				break;
+			case 3:
+				{
+				_localctx = new FuncCallNoParensExprContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
+				setState(181);
+				match(CapitalVarName);
+				setState(183); 
+				_errHandler.sync(this);
+				_alt = 1;
+				do {
+					switch (_alt) {
+					case 1:
+						{
+						{
+						setState(182);
+						expr(0);
+						}
+						}
+						break;
+					default:
+						throw new NoViableAltException(this);
+					}
+					setState(185); 
+					_errHandler.sync(this);
+					_alt = getInterpreter().adaptivePredict(_input,17,_ctx);
+				} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
+				setState(188);
+				_errHandler.sync(this);
+				switch ( getInterpreter().adaptivePredict(_input,18,_ctx) ) {
+				case 1:
+					{
+					setState(187);
+					match(T__14);
+					}
+					break;
+				}
+				}
+				break;
+			case 4:
 				{
 				_localctx = new IntExprContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-
-				setState(152);
+				setState(190);
 				match(INT);
 				}
 				break;
-			case STRING:
+			case 5:
 				{
 				_localctx = new StringExprContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(153);
+				setState(191);
 				match(STRING);
 				}
 				break;
-			case VarName:
+			case 6:
+				{
+				_localctx = new CharExprContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
+				setState(192);
+				match(CHAR);
+				}
+				break;
+			case 7:
+				{
+				_localctx = new BoolTrueExprContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
+				setState(193);
+				match(T__35);
+				}
+				break;
+			case 8:
+				{
+				_localctx = new BoolFalseExprContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
+				setState(194);
+				match(T__36);
+				}
+				break;
+			case 9:
+				{
+				_localctx = new StepExprContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
+				setState(195);
+				match(T__37);
+				setState(198);
+				_errHandler.sync(this);
+				switch ( getInterpreter().adaptivePredict(_input,19,_ctx) ) {
+				case 1:
+					{
+					setState(196);
+					match(T__38);
+					setState(197);
+					match(INT);
+					}
+					break;
+				}
+				}
+				break;
+			case 10:
 				{
 				_localctx = new VarExprContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(154);
+				setState(200);
 				match(VarName);
 				}
 				break;
-			default:
-				throw new NoViableAltException(this);
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(180);
+			setState(223);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,16,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,22,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					setState(178);
+					setState(221);
 					_errHandler.sync(this);
-					switch ( getInterpreter().adaptivePredict(_input,15,_ctx) ) {
+					switch ( getInterpreter().adaptivePredict(_input,21,_ctx) ) {
 					case 1:
+						{
+						_localctx = new LogicExprContext(new ExprContext(_parentctx, _parentState));
+						pushNewRecursionContext(_localctx, _startState, RULE_expr);
+						setState(203);
+						if (!(precpred(_ctx, 15))) throw new FailedPredicateException(this, "precpred(_ctx, 15)");
+						setState(204);
+						((LogicExprContext)_localctx).op = _input.LT(1);
+						_la = _input.LA(1);
+						if ( !(_la==T__26 || _la==T__27) ) {
+							((LogicExprContext)_localctx).op = (Token)_errHandler.recoverInline(this);
+						}
+						else {
+							if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+							_errHandler.reportMatch(this);
+							consume();
+						}
+						setState(205);
+						expr(16);
+						}
+						break;
+					case 2:
 						{
 						_localctx = new MulDivExprContext(new ExprContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
-						setState(157);
-						if (!(precpred(_ctx, 9))) throw new FailedPredicateException(this, "precpred(_ctx, 9)");
-						setState(158);
+						setState(206);
+						if (!(precpred(_ctx, 14))) throw new FailedPredicateException(this, "precpred(_ctx, 14)");
+						setState(207);
 						((MulDivExprContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
-						if ( !(_la==T__19 || _la==T__20) ) {
+						if ( !(_la==T__28 || _la==T__29) ) {
 							((MulDivExprContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 						}
 						else {
@@ -1439,20 +1850,20 @@ public class ArchiCodeParser extends Parser {
 							_errHandler.reportMatch(this);
 							consume();
 						}
-						setState(159);
-						expr(10);
+						setState(208);
+						expr(15);
 						}
 						break;
-					case 2:
+					case 3:
 						{
 						_localctx = new AddSubExprContext(new ExprContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
-						setState(160);
-						if (!(precpred(_ctx, 8))) throw new FailedPredicateException(this, "precpred(_ctx, 8)");
-						setState(161);
+						setState(209);
+						if (!(precpred(_ctx, 13))) throw new FailedPredicateException(this, "precpred(_ctx, 13)");
+						setState(210);
 						((AddSubExprContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
-						if ( !(_la==T__21 || _la==T__22) ) {
+						if ( !(_la==T__30 || _la==T__31) ) {
 							((AddSubExprContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 						}
 						else {
@@ -1460,74 +1871,52 @@ public class ArchiCodeParser extends Parser {
 							_errHandler.reportMatch(this);
 							consume();
 						}
-						setState(162);
-						expr(9);
-						}
-						break;
-					case 3:
-						{
-						_localctx = new EqExprContext(new ExprContext(_parentctx, _parentState));
-						pushNewRecursionContext(_localctx, _startState, RULE_expr);
-						setState(163);
-						if (!(precpred(_ctx, 7))) throw new FailedPredicateException(this, "precpred(_ctx, 7)");
-						setState(164);
-						match(T__23);
-						setState(165);
-						expr(8);
+						setState(211);
+						expr(14);
 						}
 						break;
 					case 4:
 						{
-						_localctx = new LtExprContext(new ExprContext(_parentctx, _parentState));
+						_localctx = new EqExprContext(new ExprContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
-						setState(166);
-						if (!(precpred(_ctx, 6))) throw new FailedPredicateException(this, "precpred(_ctx, 6)");
-						setState(167);
-						match(T__24);
-						setState(168);
-						expr(7);
+						setState(212);
+						if (!(precpred(_ctx, 12))) throw new FailedPredicateException(this, "precpred(_ctx, 12)");
+						setState(213);
+						match(T__32);
+						setState(214);
+						expr(13);
 						}
 						break;
 					case 5:
 						{
-						_localctx = new GtExprContext(new ExprContext(_parentctx, _parentState));
+						_localctx = new LtExprContext(new ExprContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
-						setState(169);
-						if (!(precpred(_ctx, 5))) throw new FailedPredicateException(this, "precpred(_ctx, 5)");
-						setState(170);
-						match(T__25);
-						setState(171);
-						expr(6);
+						setState(215);
+						if (!(precpred(_ctx, 11))) throw new FailedPredicateException(this, "precpred(_ctx, 11)");
+						setState(216);
+						match(T__33);
+						setState(217);
+						expr(12);
 						}
 						break;
 					case 6:
 						{
-						_localctx = new FuncCallExprContext(new ExprContext(_parentctx, _parentState));
+						_localctx = new GtExprContext(new ExprContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
-						setState(172);
-						if (!(precpred(_ctx, 4))) throw new FailedPredicateException(this, "precpred(_ctx, 4)");
-						setState(173);
-						match(T__1);
-						setState(175);
-						_errHandler.sync(this);
-						_la = _input.LA(1);
-						if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 111669149696L) != 0)) {
-							{
-							setState(174);
-							exprList();
-							}
-						}
-
-						setState(177);
-						match(T__2);
+						setState(218);
+						if (!(precpred(_ctx, 10))) throw new FailedPredicateException(this, "precpred(_ctx, 10)");
+						setState(219);
+						match(T__34);
+						setState(220);
+						expr(11);
 						}
 						break;
 					}
 					} 
 				}
-				setState(182);
+				setState(225);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,16,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,22,_ctx);
 			}
 			}
 		}
@@ -1571,26 +1960,26 @@ public class ArchiCodeParser extends Parser {
 
 	public final ExprListContext exprList() throws RecognitionException {
 		ExprListContext _localctx = new ExprListContext(_ctx, getState());
-		enterRule(_localctx, 30, RULE_exprList);
+		enterRule(_localctx, 32, RULE_exprList);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(183);
+			setState(226);
 			expr(0);
-			setState(188);
+			setState(231);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (_la==T__9) {
+			while (_la==T__15) {
 				{
 				{
-				setState(184);
-				match(T__9);
-				setState(185);
+				setState(227);
+				match(T__15);
+				setState(228);
 				expr(0);
 				}
 				}
-				setState(190);
+				setState(233);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -1630,14 +2019,14 @@ public class ArchiCodeParser extends Parser {
 
 	public final TypeContext type() throws RecognitionException {
 		TypeContext _localctx = new TypeContext(_ctx, getState());
-		enterRule(_localctx, 32, RULE_type);
+		enterRule(_localctx, 34, RULE_type);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(191);
+			setState(234);
 			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 4160749568L) != 0)) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 34084860461056L) != 0)) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -1658,51 +2047,9 @@ public class ArchiCodeParser extends Parser {
 		return _localctx;
 	}
 
-	@SuppressWarnings("CheckReturnValue")
-	public static class ReturnStatementContext extends ParserRuleContext {
-		public ReturnStatementContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_returnStatement; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ArchiCodeListener ) ((ArchiCodeListener)listener).enterReturnStatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ArchiCodeListener ) ((ArchiCodeListener)listener).exitReturnStatement(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ArchiCodeVisitor ) return ((ArchiCodeVisitor<? extends T>)visitor).visitReturnStatement(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-
-	public final ReturnStatementContext returnStatement() throws RecognitionException {
-		ReturnStatementContext _localctx = new ReturnStatementContext(_ctx, getState());
-		enterRule(_localctx, 34, RULE_returnStatement);
-		try {
-			enterOuterAlt(_localctx, 1);
-			{
-			setState(193);
-			match(T__31);
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			_errHandler.reportError(this, re);
-			_errHandler.recover(this, re);
-		}
-		finally {
-			exitRule();
-		}
-		return _localctx;
-	}
-
 	public boolean sempred(RuleContext _localctx, int ruleIndex, int predIndex) {
 		switch (ruleIndex) {
-		case 14:
+		case 15:
 			return expr_sempred((ExprContext)_localctx, predIndex);
 		}
 		return true;
@@ -1710,23 +2057,23 @@ public class ArchiCodeParser extends Parser {
 	private boolean expr_sempred(ExprContext _localctx, int predIndex) {
 		switch (predIndex) {
 		case 0:
-			return precpred(_ctx, 9);
+			return precpred(_ctx, 15);
 		case 1:
-			return precpred(_ctx, 8);
+			return precpred(_ctx, 14);
 		case 2:
-			return precpred(_ctx, 7);
+			return precpred(_ctx, 13);
 		case 3:
-			return precpred(_ctx, 6);
+			return precpred(_ctx, 12);
 		case 4:
-			return precpred(_ctx, 5);
+			return precpred(_ctx, 11);
 		case 5:
-			return precpred(_ctx, 4);
+			return precpred(_ctx, 10);
 		}
 		return true;
 	}
 
 	public static final String _serializedATN =
-		"\u0004\u0001(\u00c4\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
+		"\u0004\u00015\u00ed\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
 		"\u0002\u0007\u0002\u0002\u0003\u0007\u0003\u0002\u0004\u0007\u0004\u0002"+
 		"\u0005\u0007\u0005\u0002\u0006\u0007\u0006\u0002\u0007\u0007\u0007\u0002"+
 		"\b\u0007\b\u0002\t\u0007\t\u0002\n\u0007\n\u0002\u000b\u0007\u000b\u0002"+
@@ -1734,118 +2081,151 @@ public class ArchiCodeParser extends Parser {
 		"\u0002\u0010\u0007\u0010\u0002\u0011\u0007\u0011\u0001\u0000\u0004\u0000"+
 		"&\b\u0000\u000b\u0000\f\u0000\'\u0001\u0000\u0001\u0000\u0001\u0001\u0001"+
 		"\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001"+
-		"\u0001\u0001\u0001\u0003\u00015\b\u0001\u0001\u0002\u0001\u0002\u0001"+
-		"\u0002\u0003\u0002:\b\u0002\u0001\u0002\u0001\u0002\u0001\u0002\u0001"+
-		"\u0002\u0001\u0002\u0001\u0002\u0001\u0003\u0001\u0003\u0001\u0003\u0001"+
-		"\u0004\u0001\u0004\u0003\u0004G\b\u0004\u0001\u0004\u0001\u0004\u0001"+
-		"\u0004\u0001\u0004\u0001\u0005\u0001\u0005\u0001\u0005\u0001\u0005\u0001"+
+		"\u0001\u0001\u0001\u0001\u0001\u0003\u00016\b\u0001\u0001\u0002\u0001"+
+		"\u0002\u0001\u0002\u0003\u0002;\b\u0002\u0001\u0002\u0001\u0002\u0001"+
+		"\u0002\u0001\u0002\u0001\u0002\u0001\u0002\u0001\u0003\u0001\u0003\u0001"+
+		"\u0003\u0001\u0004\u0001\u0004\u0003\u0004H\b\u0004\u0001\u0004\u0001"+
+		"\u0004\u0001\u0004\u0001\u0004\u0001\u0005\u0001\u0005\u0001\u0005\u0001"+
+		"\u0005\u0001\u0005\u0001\u0005\u0001\u0005\u0001\u0005\u0003\u0005V\b"+
+		"\u0005\u0001\u0005\u0001\u0005\u0003\u0005Z\b\u0005\u0001\u0006\u0001"+
 		"\u0006\u0001\u0006\u0001\u0006\u0001\u0007\u0001\u0007\u0001\u0007\u0001"+
-		"\u0007\u0003\u0007X\b\u0007\u0001\u0007\u0001\u0007\u0001\u0007\u0001"+
-		"\u0007\u0001\u0007\u0003\u0007_\b\u0007\u0001\u0007\u0001\u0007\u0001"+
-		"\b\u0001\b\u0003\be\b\b\u0001\t\u0001\t\u0001\t\u0005\tj\b\t\n\t\f\tm"+
-		"\t\t\u0001\n\u0003\np\b\n\u0001\n\u0001\n\u0001\u000b\u0001\u000b\u0001"+
-		"\u000b\u0001\u000b\u0001\u000b\u0001\u000b\u0001\u000b\u0001\u000b\u0001"+
-		"\u000b\u0001\u000b\u0001\u000b\u0001\u000b\u0001\u000b\u0001\u000b\u0003"+
-		"\u000b\u0082\b\u000b\u0001\f\u0001\f\u0001\f\u0001\f\u0001\f\u0001\f\u0001"+
-		"\f\u0003\f\u008b\b\f\u0003\f\u008d\b\f\u0001\r\u0001\r\u0005\r\u0091\b"+
-		"\r\n\r\f\r\u0094\t\r\u0001\r\u0001\r\u0001\u000e\u0001\u000e\u0001\u000e"+
-		"\u0001\u000e\u0003\u000e\u009c\b\u000e\u0001\u000e\u0001\u000e\u0001\u000e"+
-		"\u0001\u000e\u0001\u000e\u0001\u000e\u0001\u000e\u0001\u000e\u0001\u000e"+
-		"\u0001\u000e\u0001\u000e\u0001\u000e\u0001\u000e\u0001\u000e\u0001\u000e"+
-		"\u0001\u000e\u0001\u000e\u0001\u000e\u0003\u000e\u00b0\b\u000e\u0001\u000e"+
-		"\u0005\u000e\u00b3\b\u000e\n\u000e\f\u000e\u00b6\t\u000e\u0001\u000f\u0001"+
-		"\u000f\u0001\u000f\u0005\u000f\u00bb\b\u000f\n\u000f\f\u000f\u00be\t\u000f"+
-		"\u0001\u0010\u0001\u0010\u0001\u0011\u0001\u0011\u0001\u0011\u0000\u0001"+
-		"\u001c\u0012\u0000\u0002\u0004\u0006\b\n\f\u000e\u0010\u0012\u0014\u0016"+
-		"\u0018\u001a\u001c\u001e \"\u0000\u0003\u0001\u0000\u0014\u0015\u0001"+
-		"\u0000\u0016\u0017\u0001\u0000\u001b\u001f\u00d0\u0000%\u0001\u0000\u0000"+
-		"\u0000\u00024\u0001\u0000\u0000\u0000\u00046\u0001\u0000\u0000\u0000\u0006"+
-		"A\u0001\u0000\u0000\u0000\bD\u0001\u0000\u0000\u0000\nL\u0001\u0000\u0000"+
-		"\u0000\fP\u0001\u0000\u0000\u0000\u000eS\u0001\u0000\u0000\u0000\u0010"+
-		"b\u0001\u0000\u0000\u0000\u0012f\u0001\u0000\u0000\u0000\u0014o\u0001"+
-		"\u0000\u0000\u0000\u0016\u0081\u0001\u0000\u0000\u0000\u0018\u0083\u0001"+
-		"\u0000\u0000\u0000\u001a\u008e\u0001\u0000\u0000\u0000\u001c\u009b\u0001"+
-		"\u0000\u0000\u0000\u001e\u00b7\u0001\u0000\u0000\u0000 \u00bf\u0001\u0000"+
-		"\u0000\u0000\"\u00c1\u0001\u0000\u0000\u0000$&\u0003\u0002\u0001\u0000"+
-		"%$\u0001\u0000\u0000\u0000&\'\u0001\u0000\u0000\u0000\'%\u0001\u0000\u0000"+
-		"\u0000\'(\u0001\u0000\u0000\u0000()\u0001\u0000\u0000\u0000)*\u0005\u0000"+
-		"\u0000\u0001*\u0001\u0001\u0000\u0000\u0000+5\u0003\u0006\u0003\u0000"+
-		",5\u0003\b\u0004\u0000-5\u0003\n\u0005\u0000.5\u0003\f\u0006\u0000/5\u0003"+
-		"\u0016\u000b\u000005\u0003\u0018\f\u000015\u0003\u000e\u0007\u000025\u0003"+
-		"\u0010\b\u000035\u0003\u0004\u0002\u00004+\u0001\u0000\u0000\u00004,\u0001"+
-		"\u0000\u0000\u00004-\u0001\u0000\u0000\u00004.\u0001\u0000\u0000\u0000"+
-		"4/\u0001\u0000\u0000\u000040\u0001\u0000\u0000\u000041\u0001\u0000\u0000"+
-		"\u000042\u0001\u0000\u0000\u000043\u0001\u0000\u0000\u00005\u0003\u0001"+
-		"\u0000\u0000\u000067\u0005\u0001\u0000\u000079\u0005\u0002\u0000\u0000"+
-		"8:\u0003\u0012\t\u000098\u0001\u0000\u0000\u00009:\u0001\u0000\u0000\u0000"+
-		":;\u0001\u0000\u0000\u0000;<\u0005\u0003\u0000\u0000<=\u0005\u0004\u0000"+
-		"\u0000=>\u0003 \u0010\u0000>?\u0005!\u0000\u0000?@\u0003\u001a\r\u0000"+
-		"@\u0005\u0001\u0000\u0000\u0000AB\u0005\u0005\u0000\u0000BC\u0003\u001c"+
-		"\u000e\u0000C\u0007\u0001\u0000\u0000\u0000DF\u0005\u0006\u0000\u0000"+
-		"EG\u0003 \u0010\u0000FE\u0001\u0000\u0000\u0000FG\u0001\u0000\u0000\u0000"+
-		"GH\u0001\u0000\u0000\u0000HI\u0005!\u0000\u0000IJ\u0005\u0007\u0000\u0000"+
-		"JK\u0003\u001c\u000e\u0000K\t\u0001\u0000\u0000\u0000LM\u0005!\u0000\u0000"+
-		"MN\u0005\u0007\u0000\u0000NO\u0003\u001c\u000e\u0000O\u000b\u0001\u0000"+
-		"\u0000\u0000PQ\u0005\b\u0000\u0000QR\u0005!\u0000\u0000R\r\u0001\u0000"+
-		"\u0000\u0000ST\u0005\t\u0000\u0000TU\u0005\"\u0000\u0000UW\u0005\u0002"+
-		"\u0000\u0000VX\u0003\u0012\t\u0000WV\u0001\u0000\u0000\u0000WX\u0001\u0000"+
-		"\u0000\u0000XY\u0001\u0000\u0000\u0000YZ\u0005\u0003\u0000\u0000Z[\u0005"+
-		"\u0004\u0000\u0000[^\u0005!\u0000\u0000\\]\u0005\u0007\u0000\u0000]_\u0003"+
-		"\u001c\u000e\u0000^\\\u0001\u0000\u0000\u0000^_\u0001\u0000\u0000\u0000"+
-		"_`\u0001\u0000\u0000\u0000`a\u0003\u001a\r\u0000a\u000f\u0001\u0000\u0000"+
-		"\u0000bd\u0005\"\u0000\u0000ce\u0003\u0012\t\u0000dc\u0001\u0000\u0000"+
-		"\u0000de\u0001\u0000\u0000\u0000e\u0011\u0001\u0000\u0000\u0000fk\u0003"+
-		"\u0014\n\u0000gh\u0005\n\u0000\u0000hj\u0003\u0014\n\u0000ig\u0001\u0000"+
-		"\u0000\u0000jm\u0001\u0000\u0000\u0000ki\u0001\u0000\u0000\u0000kl\u0001"+
-		"\u0000\u0000\u0000l\u0013\u0001\u0000\u0000\u0000mk\u0001\u0000\u0000"+
-		"\u0000np\u0003 \u0010\u0000on\u0001\u0000\u0000\u0000op\u0001\u0000\u0000"+
-		"\u0000pq\u0001\u0000\u0000\u0000qr\u0005!\u0000\u0000r\u0015\u0001\u0000"+
-		"\u0000\u0000st\u0005\u000b\u0000\u0000tu\u0005#\u0000\u0000u\u0082\u0003"+
-		"\u001a\r\u0000vw\u0005\u000b\u0000\u0000wx\u0005\f\u0000\u0000xy\u0003"+
-		"\u001c\u000e\u0000yz\u0003\u001a\r\u0000z\u0082\u0001\u0000\u0000\u0000"+
-		"{|\u0005\u000b\u0000\u0000|}\u0005\r\u0000\u0000}~\u0005!\u0000\u0000"+
-		"~\u007f\u0005\u000e\u0000\u0000\u007f\u0080\u0005!\u0000\u0000\u0080\u0082"+
-		"\u0003\u001a\r\u0000\u0081s\u0001\u0000\u0000\u0000\u0081v\u0001\u0000"+
-		"\u0000\u0000\u0081{\u0001\u0000\u0000\u0000\u0082\u0017\u0001\u0000\u0000"+
-		"\u0000\u0083\u0084\u0005\u000f\u0000\u0000\u0084\u0085\u0003\u001c\u000e"+
-		"\u0000\u0085\u0086\u0005\u0010\u0000\u0000\u0086\u008c\u0003\u001a\r\u0000"+
-		"\u0087\u008a\u0005\u0011\u0000\u0000\u0088\u008b\u0003\u0018\f\u0000\u0089"+
-		"\u008b\u0003\u001a\r\u0000\u008a\u0088\u0001\u0000\u0000\u0000\u008a\u0089"+
-		"\u0001\u0000\u0000\u0000\u008b\u008d\u0001\u0000\u0000\u0000\u008c\u0087"+
-		"\u0001\u0000\u0000\u0000\u008c\u008d\u0001\u0000\u0000\u0000\u008d\u0019"+
-		"\u0001\u0000\u0000\u0000\u008e\u0092\u0005\u0012\u0000\u0000\u008f\u0091"+
-		"\u0003\u0002\u0001\u0000\u0090\u008f\u0001\u0000\u0000\u0000\u0091\u0094"+
-		"\u0001\u0000\u0000\u0000\u0092\u0090\u0001\u0000\u0000\u0000\u0092\u0093"+
-		"\u0001\u0000\u0000\u0000\u0093\u0095\u0001\u0000\u0000\u0000\u0094\u0092"+
-		"\u0001\u0000\u0000\u0000\u0095\u0096\u0005\u0013\u0000\u0000\u0096\u001b"+
-		"\u0001\u0000\u0000\u0000\u0097\u0098\u0006\u000e\uffff\uffff\u0000\u0098"+
-		"\u009c\u0005#\u0000\u0000\u0099\u009c\u0005$\u0000\u0000\u009a\u009c\u0005"+
-		"!\u0000\u0000\u009b\u0097\u0001\u0000\u0000\u0000\u009b\u0099\u0001\u0000"+
-		"\u0000\u0000\u009b\u009a\u0001\u0000\u0000\u0000\u009c\u00b4\u0001\u0000"+
-		"\u0000\u0000\u009d\u009e\n\t\u0000\u0000\u009e\u009f\u0007\u0000\u0000"+
-		"\u0000\u009f\u00b3\u0003\u001c\u000e\n\u00a0\u00a1\n\b\u0000\u0000\u00a1"+
-		"\u00a2\u0007\u0001\u0000\u0000\u00a2\u00b3\u0003\u001c\u000e\t\u00a3\u00a4"+
-		"\n\u0007\u0000\u0000\u00a4\u00a5\u0005\u0018\u0000\u0000\u00a5\u00b3\u0003"+
-		"\u001c\u000e\b\u00a6\u00a7\n\u0006\u0000\u0000\u00a7\u00a8\u0005\u0019"+
-		"\u0000\u0000\u00a8\u00b3\u0003\u001c\u000e\u0007\u00a9\u00aa\n\u0005\u0000"+
-		"\u0000\u00aa\u00ab\u0005\u001a\u0000\u0000\u00ab\u00b3\u0003\u001c\u000e"+
-		"\u0006\u00ac\u00ad\n\u0004\u0000\u0000\u00ad\u00af\u0005\u0002\u0000\u0000"+
-		"\u00ae\u00b0\u0003\u001e\u000f\u0000\u00af\u00ae\u0001\u0000\u0000\u0000"+
-		"\u00af\u00b0\u0001\u0000\u0000\u0000\u00b0\u00b1\u0001\u0000\u0000\u0000"+
-		"\u00b1\u00b3\u0005\u0003\u0000\u0000\u00b2\u009d\u0001\u0000\u0000\u0000"+
-		"\u00b2\u00a0\u0001\u0000\u0000\u0000\u00b2\u00a3\u0001\u0000\u0000\u0000"+
-		"\u00b2\u00a6\u0001\u0000\u0000\u0000\u00b2\u00a9\u0001\u0000\u0000\u0000"+
-		"\u00b2\u00ac\u0001\u0000\u0000\u0000\u00b3\u00b6\u0001\u0000\u0000\u0000"+
-		"\u00b4\u00b2\u0001\u0000\u0000\u0000\u00b4\u00b5\u0001\u0000\u0000\u0000"+
-		"\u00b5\u001d\u0001\u0000\u0000\u0000\u00b6\u00b4\u0001\u0000\u0000\u0000"+
-		"\u00b7\u00bc\u0003\u001c\u000e\u0000\u00b8\u00b9\u0005\n\u0000\u0000\u00b9"+
-		"\u00bb\u0003\u001c\u000e\u0000\u00ba\u00b8\u0001\u0000\u0000\u0000\u00bb"+
-		"\u00be\u0001\u0000\u0000\u0000\u00bc\u00ba\u0001\u0000\u0000\u0000\u00bc"+
-		"\u00bd\u0001\u0000\u0000\u0000\u00bd\u001f\u0001\u0000\u0000\u0000\u00be"+
-		"\u00bc\u0001\u0000\u0000\u0000\u00bf\u00c0\u0007\u0002\u0000\u0000\u00c0"+
-		"!\u0001\u0000\u0000\u0000\u00c1\u00c2\u0005 \u0000\u0000\u00c2#\u0001"+
-		"\u0000\u0000\u0000\u0012\'49FW^dko\u0081\u008a\u008c\u0092\u009b\u00af"+
-		"\u00b2\u00b4\u00bc";
+		"\b\u0001\b\u0001\b\u0001\b\u0003\bg\b\b\u0001\b\u0001\b\u0001\b\u0001"+
+		"\b\u0001\b\u0001\b\u0003\bo\b\b\u0001\b\u0001\b\u0001\t\u0001\t\u0004"+
+		"\tu\b\t\u000b\t\f\tv\u0001\t\u0003\tz\b\t\u0001\n\u0001\n\u0001\n\u0005"+
+		"\n\u007f\b\n\n\n\f\n\u0082\t\n\u0001\u000b\u0003\u000b\u0085\b\u000b\u0001"+
+		"\u000b\u0001\u000b\u0001\f\u0001\f\u0001\f\u0001\f\u0001\f\u0001\f\u0001"+
+		"\f\u0001\f\u0001\f\u0001\f\u0001\f\u0001\f\u0001\f\u0001\f\u0003\f\u0097"+
+		"\b\f\u0001\r\u0001\r\u0001\r\u0001\r\u0001\r\u0001\r\u0001\r\u0003\r\u00a0"+
+		"\b\r\u0003\r\u00a2\b\r\u0001\u000e\u0001\u000e\u0005\u000e\u00a6\b\u000e"+
+		"\n\u000e\f\u000e\u00a9\t\u000e\u0001\u000e\u0001\u000e\u0001\u000f\u0001"+
+		"\u000f\u0001\u000f\u0001\u000f\u0001\u000f\u0001\u000f\u0003\u000f\u00b3"+
+		"\b\u000f\u0001\u000f\u0001\u000f\u0001\u000f\u0004\u000f\u00b8\b\u000f"+
+		"\u000b\u000f\f\u000f\u00b9\u0001\u000f\u0003\u000f\u00bd\b\u000f\u0001"+
+		"\u000f\u0001\u000f\u0001\u000f\u0001\u000f\u0001\u000f\u0001\u000f\u0001"+
+		"\u000f\u0001\u000f\u0003\u000f\u00c7\b\u000f\u0001\u000f\u0003\u000f\u00ca"+
+		"\b\u000f\u0001\u000f\u0001\u000f\u0001\u000f\u0001\u000f\u0001\u000f\u0001"+
+		"\u000f\u0001\u000f\u0001\u000f\u0001\u000f\u0001\u000f\u0001\u000f\u0001"+
+		"\u000f\u0001\u000f\u0001\u000f\u0001\u000f\u0001\u000f\u0001\u000f\u0001"+
+		"\u000f\u0005\u000f\u00de\b\u000f\n\u000f\f\u000f\u00e1\t\u000f\u0001\u0010"+
+		"\u0001\u0010\u0001\u0010\u0005\u0010\u00e6\b\u0010\n\u0010\f\u0010\u00e9"+
+		"\t\u0010\u0001\u0011\u0001\u0011\u0001\u0011\u0000\u0001\u001e\u0012\u0000"+
+		"\u0002\u0004\u0006\b\n\f\u000e\u0010\u0012\u0014\u0016\u0018\u001a\u001c"+
+		"\u001e \"\u0000\u0005\u0001\u0000\b\n\u0001\u0000\u001b\u001c\u0001\u0000"+
+		"\u001d\u001e\u0001\u0000\u001f \u0001\u0000(,\u0107\u0000%\u0001\u0000"+
+		"\u0000\u0000\u00025\u0001\u0000\u0000\u0000\u00047\u0001\u0000\u0000\u0000"+
+		"\u0006B\u0001\u0000\u0000\u0000\bE\u0001\u0000\u0000\u0000\nM\u0001\u0000"+
+		"\u0000\u0000\f[\u0001\u0000\u0000\u0000\u000e_\u0001\u0000\u0000\u0000"+
+		"\u0010b\u0001\u0000\u0000\u0000\u0012r\u0001\u0000\u0000\u0000\u0014{"+
+		"\u0001\u0000\u0000\u0000\u0016\u0084\u0001\u0000\u0000\u0000\u0018\u0096"+
+		"\u0001\u0000\u0000\u0000\u001a\u0098\u0001\u0000\u0000\u0000\u001c\u00a3"+
+		"\u0001\u0000\u0000\u0000\u001e\u00c9\u0001\u0000\u0000\u0000 \u00e2\u0001"+
+		"\u0000\u0000\u0000\"\u00ea\u0001\u0000\u0000\u0000$&\u0003\u0002\u0001"+
+		"\u0000%$\u0001\u0000\u0000\u0000&\'\u0001\u0000\u0000\u0000\'%\u0001\u0000"+
+		"\u0000\u0000\'(\u0001\u0000\u0000\u0000()\u0001\u0000\u0000\u0000)*\u0005"+
+		"\u0000\u0000\u0001*\u0001\u0001\u0000\u0000\u0000+6\u0003\u0006\u0003"+
+		"\u0000,6\u0003\b\u0004\u0000-6\u0003\n\u0005\u0000.6\u0003\f\u0006\u0000"+
+		"/6\u0003\u000e\u0007\u000006\u0003\u0018\f\u000016\u0003\u001a\r\u0000"+
+		"26\u0003\u0010\b\u000036\u0003\u0012\t\u000046\u0003\u0004\u0002\u0000"+
+		"5+\u0001\u0000\u0000\u00005,\u0001\u0000\u0000\u00005-\u0001\u0000\u0000"+
+		"\u00005.\u0001\u0000\u0000\u00005/\u0001\u0000\u0000\u000050\u0001\u0000"+
+		"\u0000\u000051\u0001\u0000\u0000\u000052\u0001\u0000\u0000\u000053\u0001"+
+		"\u0000\u0000\u000054\u0001\u0000\u0000\u00006\u0003\u0001\u0000\u0000"+
+		"\u000078\u0005\u0001\u0000\u00008:\u0005\u0002\u0000\u00009;\u0003\u0014"+
+		"\n\u0000:9\u0001\u0000\u0000\u0000:;\u0001\u0000\u0000\u0000;<\u0001\u0000"+
+		"\u0000\u0000<=\u0005\u0003\u0000\u0000=>\u0005\u0004\u0000\u0000>?\u0003"+
+		"\"\u0011\u0000?@\u0005-\u0000\u0000@A\u0003\u001c\u000e\u0000A\u0005\u0001"+
+		"\u0000\u0000\u0000BC\u0005\u0005\u0000\u0000CD\u0003\u001e\u000f\u0000"+
+		"D\u0007\u0001\u0000\u0000\u0000EG\u0005\u0006\u0000\u0000FH\u0003\"\u0011"+
+		"\u0000GF\u0001\u0000\u0000\u0000GH\u0001\u0000\u0000\u0000HI\u0001\u0000"+
+		"\u0000\u0000IJ\u0005-\u0000\u0000JK\u0005\u0007\u0000\u0000KL\u0003\u001e"+
+		"\u000f\u0000L\t\u0001\u0000\u0000\u0000MN\u0005\u0006\u0000\u0000NO\u0007"+
+		"\u0000\u0000\u0000OP\u0003\"\u0011\u0000PU\u0005-\u0000\u0000QR\u0005"+
+		"\u000b\u0000\u0000RS\u0003\u001e\u000f\u0000ST\u0005\f\u0000\u0000TV\u0001"+
+		"\u0000\u0000\u0000UQ\u0001\u0000\u0000\u0000UV\u0001\u0000\u0000\u0000"+
+		"VY\u0001\u0000\u0000\u0000WX\u0005\u0007\u0000\u0000XZ\u0003\u001e\u000f"+
+		"\u0000YW\u0001\u0000\u0000\u0000YZ\u0001\u0000\u0000\u0000Z\u000b\u0001"+
+		"\u0000\u0000\u0000[\\\u0005-\u0000\u0000\\]\u0005\u0007\u0000\u0000]^"+
+		"\u0003\u001e\u000f\u0000^\r\u0001\u0000\u0000\u0000_`\u0005\r\u0000\u0000"+
+		"`a\u0005-\u0000\u0000a\u000f\u0001\u0000\u0000\u0000bc\u0005\u000e\u0000"+
+		"\u0000cd\u0005.\u0000\u0000df\u0005\u0002\u0000\u0000eg\u0003\u0014\n"+
+		"\u0000fe\u0001\u0000\u0000\u0000fg\u0001\u0000\u0000\u0000gh\u0001\u0000"+
+		"\u0000\u0000hi\u0005\u0003\u0000\u0000ij\u0005\u0004\u0000\u0000jk\u0003"+
+		"\"\u0011\u0000kn\u0005-\u0000\u0000lm\u0005\u0007\u0000\u0000mo\u0003"+
+		"\u001e\u000f\u0000nl\u0001\u0000\u0000\u0000no\u0001\u0000\u0000\u0000"+
+		"op\u0001\u0000\u0000\u0000pq\u0003\u001c\u000e\u0000q\u0011\u0001\u0000"+
+		"\u0000\u0000rt\u0005.\u0000\u0000su\u0003\u001e\u000f\u0000ts\u0001\u0000"+
+		"\u0000\u0000uv\u0001\u0000\u0000\u0000vt\u0001\u0000\u0000\u0000vw\u0001"+
+		"\u0000\u0000\u0000wy\u0001\u0000\u0000\u0000xz\u0005\u000f\u0000\u0000"+
+		"yx\u0001\u0000\u0000\u0000yz\u0001\u0000\u0000\u0000z\u0013\u0001\u0000"+
+		"\u0000\u0000{\u0080\u0003\u0016\u000b\u0000|}\u0005\u0010\u0000\u0000"+
+		"}\u007f\u0003\u0016\u000b\u0000~|\u0001\u0000\u0000\u0000\u007f\u0082"+
+		"\u0001\u0000\u0000\u0000\u0080~\u0001\u0000\u0000\u0000\u0080\u0081\u0001"+
+		"\u0000\u0000\u0000\u0081\u0015\u0001\u0000\u0000\u0000\u0082\u0080\u0001"+
+		"\u0000\u0000\u0000\u0083\u0085\u0003\"\u0011\u0000\u0084\u0083\u0001\u0000"+
+		"\u0000\u0000\u0084\u0085\u0001\u0000\u0000\u0000\u0085\u0086\u0001\u0000"+
+		"\u0000\u0000\u0086\u0087\u0005-\u0000\u0000\u0087\u0017\u0001\u0000\u0000"+
+		"\u0000\u0088\u0089\u0005\u0011\u0000\u0000\u0089\u008a\u0005/\u0000\u0000"+
+		"\u008a\u0097\u0003\u001c\u000e\u0000\u008b\u008c\u0005\u0011\u0000\u0000"+
+		"\u008c\u008d\u0005\u0012\u0000\u0000\u008d\u008e\u0003\u001e\u000f\u0000"+
+		"\u008e\u008f\u0003\u001c\u000e\u0000\u008f\u0097\u0001\u0000\u0000\u0000"+
+		"\u0090\u0091\u0005\u0011\u0000\u0000\u0091\u0092\u0005\u0013\u0000\u0000"+
+		"\u0092\u0093\u0005-\u0000\u0000\u0093\u0094\u0005\u0014\u0000\u0000\u0094"+
+		"\u0095\u0005-\u0000\u0000\u0095\u0097\u0003\u001c\u000e\u0000\u0096\u0088"+
+		"\u0001\u0000\u0000\u0000\u0096\u008b\u0001\u0000\u0000\u0000\u0096\u0090"+
+		"\u0001\u0000\u0000\u0000\u0097\u0019\u0001\u0000\u0000\u0000\u0098\u0099"+
+		"\u0005\u0015\u0000\u0000\u0099\u009a\u0003\u001e\u000f\u0000\u009a\u009b"+
+		"\u0005\u0016\u0000\u0000\u009b\u00a1\u0003\u001c\u000e\u0000\u009c\u009f"+
+		"\u0005\u0017\u0000\u0000\u009d\u00a0\u0003\u001a\r\u0000\u009e\u00a0\u0003"+
+		"\u001c\u000e\u0000\u009f\u009d\u0001\u0000\u0000\u0000\u009f\u009e\u0001"+
+		"\u0000\u0000\u0000\u00a0\u00a2\u0001\u0000\u0000\u0000\u00a1\u009c\u0001"+
+		"\u0000\u0000\u0000\u00a1\u00a2\u0001\u0000\u0000\u0000\u00a2\u001b\u0001"+
+		"\u0000\u0000\u0000\u00a3\u00a7\u0005\u0018\u0000\u0000\u00a4\u00a6\u0003"+
+		"\u0002\u0001\u0000\u00a5\u00a4\u0001\u0000\u0000\u0000\u00a6\u00a9\u0001"+
+		"\u0000\u0000\u0000\u00a7\u00a5\u0001\u0000\u0000\u0000\u00a7\u00a8\u0001"+
+		"\u0000\u0000\u0000\u00a8\u00aa\u0001\u0000\u0000\u0000\u00a9\u00a7\u0001"+
+		"\u0000\u0000\u0000\u00aa\u00ab\u0005\u0019\u0000\u0000\u00ab\u001d\u0001"+
+		"\u0000\u0000\u0000\u00ac\u00ad\u0006\u000f\uffff\uffff\u0000\u00ad\u00ae"+
+		"\u0005\u001a\u0000\u0000\u00ae\u00ca\u0003\u001e\u000f\u0010\u00af\u00b0"+
+		"\u0005.\u0000\u0000\u00b0\u00b2\u0005\u0002\u0000\u0000\u00b1\u00b3\u0003"+
+		" \u0010\u0000\u00b2\u00b1\u0001\u0000\u0000\u0000\u00b2\u00b3\u0001\u0000"+
+		"\u0000\u0000\u00b3\u00b4\u0001\u0000\u0000\u0000\u00b4\u00ca\u0005\u0003"+
+		"\u0000\u0000\u00b5\u00b7\u0005.\u0000\u0000\u00b6\u00b8\u0003\u001e\u000f"+
+		"\u0000\u00b7\u00b6\u0001\u0000\u0000\u0000\u00b8\u00b9\u0001\u0000\u0000"+
+		"\u0000\u00b9\u00b7\u0001\u0000\u0000\u0000\u00b9\u00ba\u0001\u0000\u0000"+
+		"\u0000\u00ba\u00bc\u0001\u0000\u0000\u0000\u00bb\u00bd\u0005\u000f\u0000"+
+		"\u0000\u00bc\u00bb\u0001\u0000\u0000\u0000\u00bc\u00bd\u0001\u0000\u0000"+
+		"\u0000\u00bd\u00ca\u0001\u0000\u0000\u0000\u00be\u00ca\u0005/\u0000\u0000"+
+		"\u00bf\u00ca\u00051\u0000\u0000\u00c0\u00ca\u00050\u0000\u0000\u00c1\u00ca"+
+		"\u0005$\u0000\u0000\u00c2\u00ca\u0005%\u0000\u0000\u00c3\u00c6\u0005&"+
+		"\u0000\u0000\u00c4\u00c5\u0005\'\u0000\u0000\u00c5\u00c7\u0005/\u0000"+
+		"\u0000\u00c6\u00c4\u0001\u0000\u0000\u0000\u00c6\u00c7\u0001\u0000\u0000"+
+		"\u0000\u00c7\u00ca\u0001\u0000\u0000\u0000\u00c8\u00ca\u0005-\u0000\u0000"+
+		"\u00c9\u00ac\u0001\u0000\u0000\u0000\u00c9\u00af\u0001\u0000\u0000\u0000"+
+		"\u00c9\u00b5\u0001\u0000\u0000\u0000\u00c9\u00be\u0001\u0000\u0000\u0000"+
+		"\u00c9\u00bf\u0001\u0000\u0000\u0000\u00c9\u00c0\u0001\u0000\u0000\u0000"+
+		"\u00c9\u00c1\u0001\u0000\u0000\u0000\u00c9\u00c2\u0001\u0000\u0000\u0000"+
+		"\u00c9\u00c3\u0001\u0000\u0000\u0000\u00c9\u00c8\u0001\u0000\u0000\u0000"+
+		"\u00ca\u00df\u0001\u0000\u0000\u0000\u00cb\u00cc\n\u000f\u0000\u0000\u00cc"+
+		"\u00cd\u0007\u0001\u0000\u0000\u00cd\u00de\u0003\u001e\u000f\u0010\u00ce"+
+		"\u00cf\n\u000e\u0000\u0000\u00cf\u00d0\u0007\u0002\u0000\u0000\u00d0\u00de"+
+		"\u0003\u001e\u000f\u000f\u00d1\u00d2\n\r\u0000\u0000\u00d2\u00d3\u0007"+
+		"\u0003\u0000\u0000\u00d3\u00de\u0003\u001e\u000f\u000e\u00d4\u00d5\n\f"+
+		"\u0000\u0000\u00d5\u00d6\u0005!\u0000\u0000\u00d6\u00de\u0003\u001e\u000f"+
+		"\r\u00d7\u00d8\n\u000b\u0000\u0000\u00d8\u00d9\u0005\"\u0000\u0000\u00d9"+
+		"\u00de\u0003\u001e\u000f\f\u00da\u00db\n\n\u0000\u0000\u00db\u00dc\u0005"+
+		"#\u0000\u0000\u00dc\u00de\u0003\u001e\u000f\u000b\u00dd\u00cb\u0001\u0000"+
+		"\u0000\u0000\u00dd\u00ce\u0001\u0000\u0000\u0000\u00dd\u00d1\u0001\u0000"+
+		"\u0000\u0000\u00dd\u00d4\u0001\u0000\u0000\u0000\u00dd\u00d7\u0001\u0000"+
+		"\u0000\u0000\u00dd\u00da\u0001\u0000\u0000\u0000\u00de\u00e1\u0001\u0000"+
+		"\u0000\u0000\u00df\u00dd\u0001\u0000\u0000\u0000\u00df\u00e0\u0001\u0000"+
+		"\u0000\u0000\u00e0\u001f\u0001\u0000\u0000\u0000\u00e1\u00df\u0001\u0000"+
+		"\u0000\u0000\u00e2\u00e7\u0003\u001e\u000f\u0000\u00e3\u00e4\u0005\u0010"+
+		"\u0000\u0000\u00e4\u00e6\u0003\u001e\u000f\u0000\u00e5\u00e3\u0001\u0000"+
+		"\u0000\u0000\u00e6\u00e9\u0001\u0000\u0000\u0000\u00e7\u00e5\u0001\u0000"+
+		"\u0000\u0000\u00e7\u00e8\u0001\u0000\u0000\u0000\u00e8!\u0001\u0000\u0000"+
+		"\u0000\u00e9\u00e7\u0001\u0000\u0000\u0000\u00ea\u00eb\u0007\u0004\u0000"+
+		"\u0000\u00eb#\u0001\u0000\u0000\u0000\u0018\'5:GUYfnvy\u0080\u0084\u0096"+
+		"\u009f\u00a1\u00a7\u00b2\u00b9\u00bc\u00c6\u00c9\u00dd\u00df\u00e7";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

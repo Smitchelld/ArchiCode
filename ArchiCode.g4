@@ -5,6 +5,7 @@ program: statement+ EOF;
 statement
     : showStatement
     | defineStatement
+    | defineCollectionStatement
     | assignStatement
     | requestStatement
     | repeatStatement
@@ -26,6 +27,10 @@ defineStatement
     : 'define' type? VarName '=' expr
     ;
 
+defineCollectionStatement
+    : 'define' ('box' | 'chain' | 'catalog') type VarName ('[' expr ']')? ('=' expr)?
+    ;
+
 assignStatement
     : VarName '=' expr
     ;
@@ -35,11 +40,11 @@ requestStatement
     ;
 
 blueprintStatement
-    : 'blueprint' CapitalVarName '(' paramList? ')' 'delivers' VarName ('=' expr)? block
+    : 'blueprint' CapitalVarName '(' paramList? ')' 'delivers' type VarName ('=' expr)? block
     ;
 
 blueprintCallStatement
-    : CapitalVarName paramList?
+    : CapitalVarName expr+ ';'?
     ;
 
 paramList
@@ -65,15 +70,22 @@ block
     ;
 
 expr
-    : expr op=('*'|'/') expr     # mulDivExpr
-    | expr op=('+'|'-') expr     # addSubExpr
-    | expr '==' expr             # eqExpr
-    | expr '<' expr              # ltExpr
-    | expr '>' expr              # gtExpr
-    | expr '(' exprList? ')'     # funcCallExpr
-    | INT                        # intExpr
-    | STRING                     # stringExpr
-    | VarName                   # varExpr
+    : 'not' expr                          # notExpr
+    | expr op=('and' | 'or') expr         # logicExpr
+    | expr op=('*'|'/') expr              # mulDivExpr
+    | expr op=('+'|'-') expr              # addSubExpr
+    | expr '==' expr                      # eqExpr
+    | expr '<' expr                       # ltExpr
+    | expr '>' expr                       # gtExpr
+    | CapitalVarName '(' exprList? ')'    # funcCallExpr
+    | CapitalVarName expr+ ';'?           # funcCallNoParensExpr
+    | INT                                 # intExpr
+    | STRING                              # stringExpr
+    | CHAR                                # charExpr
+    | 'true'                              # boolTrueExpr
+    | 'false'                             # boolFalseExpr
+    | 'step' ('@' INT)?                   # stepExpr
+    | VarName                             # varExpr
     ;
 
 exprList
@@ -96,11 +108,19 @@ INT
     : [0-9]+
     ;
 
+CHAR
+    : '\'' . '\''
+    ;
+
 STRING
     : '"' (ESC|.)*? '"' ;
 
 fragment ESC
     : '\\"' | '\\\\' ; // 2-znakowa sekwencja \" oraz \\
+
+INLINE_COMMENT
+    : '>>' .*? '<<' -> skip
+    ;
 
 LINE_COMMENT
     : '>>' ~[\r\n]* -> skip
@@ -110,15 +130,6 @@ MULTILINE_COMMENT
     : '>>>' .*? '<<<' -> skip
     ;
 
-INLINE_COMMENT
-    : '>>' .*? '<<' -> skip
-    ;
-
 WS
     : [ \t\r\n]+ -> skip
     ;
-returnStatement
-    : 'return'
-    ;
-
-

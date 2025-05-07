@@ -1,7 +1,48 @@
-Core() delivers int sum {
-    define var = 4
-    show "Hello, ArchiCode"
-    show var
+Core() delivers int testResult {
+    >> Deklaracja zmiennych liczbowych
+    define a = 10
+    define b = 5
+    define c = a + b
+
+    show "a ="
+    show a
+    show "b ="
+    show b
+
+    show "a + b ="
+    show c
+
+    >> Operacje arytmetyczne
+    define d = a * 2 - b / 5
+    show "Wynik d = a * 2 - b / 5:"
+    show d
+
+    >> Porównania logiczne
+    define isGreater = a > b
+    define isEqual = a == b
+    show "Czy a > b?"
+    show isGreater
+    show "Czy a == b?"
+    show isEqual
+
+    >> Operacje logiczne
+    define flag = true
+    define condition = flag and isGreater or not isEqual
+    show "Złożony warunek logiczny:"
+    show condition
+
+    >> Zmienna typu string
+    define greeting = "Hello, ArchiCode"
+    show greeting
+
+    >> Próba redeklaracji (powinna wywołać błąd jeśli odkomentujesz)
+
+    >>define a = 99
+
+    >> Użycie niezadeklarowanej zmiennej (powinien być błąd)
+
+    >>show notDeclaredVar
+
 }
 
 
