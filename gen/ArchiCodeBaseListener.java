@@ -220,25 +220,61 @@ public class ArchiCodeBaseListener implements ArchiCodeListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterCharExpr(ArchiCodeParser.CharExprContext ctx) { }
+	@Override public void enterExpr(ArchiCodeParser.ExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitCharExpr(ArchiCodeParser.CharExprContext ctx) { }
+	@Override public void exitExpr(ArchiCodeParser.ExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterIntExpr(ArchiCodeParser.IntExprContext ctx) { }
+	@Override public void enterOrExpr(ArchiCodeParser.OrExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitIntExpr(ArchiCodeParser.IntExprContext ctx) { }
+	@Override public void exitOrExpr(ArchiCodeParser.OrExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterAndExpr(ArchiCodeParser.AndExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitAndExpr(ArchiCodeParser.AndExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterEqualityExpr(ArchiCodeParser.EqualityExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitEqualityExpr(ArchiCodeParser.EqualityExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterRelationalExpr(ArchiCodeParser.RelationalExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitRelationalExpr(ArchiCodeParser.RelationalExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -256,25 +292,25 @@ public class ArchiCodeBaseListener implements ArchiCodeListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterGtExpr(ArchiCodeParser.GtExprContext ctx) { }
+	@Override public void enterMulDivExpr(ArchiCodeParser.MulDivExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitGtExpr(ArchiCodeParser.GtExprContext ctx) { }
+	@Override public void exitMulDivExpr(ArchiCodeParser.MulDivExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterBoolFalseExpr(ArchiCodeParser.BoolFalseExprContext ctx) { }
+	@Override public void enterUnaryExpr(ArchiCodeParser.UnaryExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitBoolFalseExpr(ArchiCodeParser.BoolFalseExprContext ctx) { }
+	@Override public void exitUnaryExpr(ArchiCodeParser.UnaryExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -292,25 +328,25 @@ public class ArchiCodeBaseListener implements ArchiCodeListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterParenExpr(ArchiCodeParser.ParenExprContext ctx) { }
+	@Override public void enterIntExpr(ArchiCodeParser.IntExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitParenExpr(ArchiCodeParser.ParenExprContext ctx) { }
+	@Override public void exitIntExpr(ArchiCodeParser.IntExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterBoolTrueExpr(ArchiCodeParser.BoolTrueExprContext ctx) { }
+	@Override public void enterFloatExpr(ArchiCodeParser.FloatExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitBoolTrueExpr(ArchiCodeParser.BoolTrueExprContext ctx) { }
+	@Override public void exitFloatExpr(ArchiCodeParser.FloatExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -328,13 +364,49 @@ public class ArchiCodeBaseListener implements ArchiCodeListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterNegateExpr(ArchiCodeParser.NegateExprContext ctx) { }
+	@Override public void enterCharExpr(ArchiCodeParser.CharExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitNegateExpr(ArchiCodeParser.NegateExprContext ctx) { }
+	@Override public void exitCharExpr(ArchiCodeParser.CharExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterBoolTrueExpr(ArchiCodeParser.BoolTrueExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitBoolTrueExpr(ArchiCodeParser.BoolTrueExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterBoolFalseExpr(ArchiCodeParser.BoolFalseExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitBoolFalseExpr(ArchiCodeParser.BoolFalseExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterStepExpr(ArchiCodeParser.StepExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStepExpr(ArchiCodeParser.StepExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -352,85 +424,13 @@ public class ArchiCodeBaseListener implements ArchiCodeListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterFuncCallNoParensExpr(ArchiCodeParser.FuncCallNoParensExprContext ctx) { }
+	@Override public void enterParenExpr(ArchiCodeParser.ParenExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitFuncCallNoParensExpr(ArchiCodeParser.FuncCallNoParensExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterEqExpr(ArchiCodeParser.EqExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitEqExpr(ArchiCodeParser.EqExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterLtExpr(ArchiCodeParser.LtExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitLtExpr(ArchiCodeParser.LtExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterNotExpr(ArchiCodeParser.NotExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitNotExpr(ArchiCodeParser.NotExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterLogicExpr(ArchiCodeParser.LogicExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitLogicExpr(ArchiCodeParser.LogicExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterMulDivExpr(ArchiCodeParser.MulDivExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitMulDivExpr(ArchiCodeParser.MulDivExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterStepExpr(ArchiCodeParser.StepExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitStepExpr(ArchiCodeParser.StepExprContext ctx) { }
+	@Override public void exitParenExpr(ArchiCodeParser.ParenExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

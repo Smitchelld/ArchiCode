@@ -1,43 +1,17 @@
-Core() delivers int testResult {
-    >> Deklaracja zmiennych liczbowych
-    define a = 10
-    define b = 5
-    show "a ="
-    show a
-    show "b ="
+blueprint AddTwo(int a, int b) delivers int result = 0{
+    result = a + b
+}
+
+blueprint AddTwo(int a) delivers int result = 0{
+    result = a + 2
+}
+
+blueprint AddTwo(int a, string b) delivers int result = 0{
     show b
-    define c = a + b
-    show "a + b ="
-    show c
+}
 
-    >> Operacje arytmetyczne
-    define d = a * 2 - b / 5
-    show "Wynik d = a * 2 - b / 5:"
-    show d
-
-    >> Porównania logiczne
-    define isGreater = a > b
-    define isEqual = a == b
-    show "Czy a > b?"
-    show isGreater
-    show "Czy a == b?"
-    show isEqual
-
-    >> Operacje logiczne
-    define flag = true
-    define condition = flag and isGreater or not isEqual
-    show "Złożony warunek logiczny:"
-    show condition
-
-    >> Zmienna typu string
-    define greeting = "Hello, ArchiCode"
-    show greeting
-
-    >> Próba redeklaracji (powinna wywołać błąd)
-
-    >>define a = 99
-
-    >> Użycie niezadeklarowanej zmiennej (powinien być błąd)
-    >>show notDeclaredVar
+Core() delivers int testResult {
+    define test = AddTwo 2 "test"
+    show test
 }
 

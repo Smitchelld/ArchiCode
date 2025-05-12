@@ -6,7 +6,7 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args) throws IOException {
 
-        CharStream input = CharStreams.fromFileName("program2.ArchC");
+        CharStream input = CharStreams.fromFileName("program.ArchC");
         ArchiCodeLexer lexer = new ArchiCodeLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         ArchiCodeParser parser = new ArchiCodeParser(tokens);

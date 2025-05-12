@@ -183,221 +183,205 @@ public interface ArchiCodeListener extends ParseTreeListener {
 	 */
 	void exitBlock(ArchiCodeParser.BlockContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code charExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
+	 * Enter a parse tree produced by {@link ArchiCodeParser#expr}.
 	 * @param ctx the parse tree
 	 */
-	void enterCharExpr(ArchiCodeParser.CharExprContext ctx);
+	void enterExpr(ArchiCodeParser.ExprContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code charExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
+	 * Exit a parse tree produced by {@link ArchiCodeParser#expr}.
 	 * @param ctx the parse tree
 	 */
-	void exitCharExpr(ArchiCodeParser.CharExprContext ctx);
+	void exitExpr(ArchiCodeParser.ExprContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code intExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
+	 * Enter a parse tree produced by {@link ArchiCodeParser#orExpr}.
 	 * @param ctx the parse tree
 	 */
-	void enterIntExpr(ArchiCodeParser.IntExprContext ctx);
+	void enterOrExpr(ArchiCodeParser.OrExprContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code intExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
+	 * Exit a parse tree produced by {@link ArchiCodeParser#orExpr}.
 	 * @param ctx the parse tree
 	 */
-	void exitIntExpr(ArchiCodeParser.IntExprContext ctx);
+	void exitOrExpr(ArchiCodeParser.OrExprContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code addSubExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
+	 * Enter a parse tree produced by {@link ArchiCodeParser#andExpr}.
+	 * @param ctx the parse tree
+	 */
+	void enterAndExpr(ArchiCodeParser.AndExprContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ArchiCodeParser#andExpr}.
+	 * @param ctx the parse tree
+	 */
+	void exitAndExpr(ArchiCodeParser.AndExprContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ArchiCodeParser#equalityExpr}.
+	 * @param ctx the parse tree
+	 */
+	void enterEqualityExpr(ArchiCodeParser.EqualityExprContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ArchiCodeParser#equalityExpr}.
+	 * @param ctx the parse tree
+	 */
+	void exitEqualityExpr(ArchiCodeParser.EqualityExprContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ArchiCodeParser#relationalExpr}.
+	 * @param ctx the parse tree
+	 */
+	void enterRelationalExpr(ArchiCodeParser.RelationalExprContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ArchiCodeParser#relationalExpr}.
+	 * @param ctx the parse tree
+	 */
+	void exitRelationalExpr(ArchiCodeParser.RelationalExprContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ArchiCodeParser#addSubExpr}.
 	 * @param ctx the parse tree
 	 */
 	void enterAddSubExpr(ArchiCodeParser.AddSubExprContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code addSubExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
+	 * Exit a parse tree produced by {@link ArchiCodeParser#addSubExpr}.
 	 * @param ctx the parse tree
 	 */
 	void exitAddSubExpr(ArchiCodeParser.AddSubExprContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code gtExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
+	 * Enter a parse tree produced by {@link ArchiCodeParser#mulDivExpr}.
 	 * @param ctx the parse tree
 	 */
-	void enterGtExpr(ArchiCodeParser.GtExprContext ctx);
+	void enterMulDivExpr(ArchiCodeParser.MulDivExprContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code gtExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
+	 * Exit a parse tree produced by {@link ArchiCodeParser#mulDivExpr}.
 	 * @param ctx the parse tree
 	 */
-	void exitGtExpr(ArchiCodeParser.GtExprContext ctx);
+	void exitMulDivExpr(ArchiCodeParser.MulDivExprContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code boolFalseExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
+	 * Enter a parse tree produced by {@link ArchiCodeParser#unaryExpr}.
 	 * @param ctx the parse tree
 	 */
-	void enterBoolFalseExpr(ArchiCodeParser.BoolFalseExprContext ctx);
+	void enterUnaryExpr(ArchiCodeParser.UnaryExprContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code boolFalseExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
+	 * Exit a parse tree produced by {@link ArchiCodeParser#unaryExpr}.
 	 * @param ctx the parse tree
 	 */
-	void exitBoolFalseExpr(ArchiCodeParser.BoolFalseExprContext ctx);
+	void exitUnaryExpr(ArchiCodeParser.UnaryExprContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code funcCallExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
+	 * labeled alternative in {@link ArchiCodeParser#atom}.
 	 * @param ctx the parse tree
 	 */
 	void enterFuncCallExpr(ArchiCodeParser.FuncCallExprContext ctx);
 	/**
 	 * Exit a parse tree produced by the {@code funcCallExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
+	 * labeled alternative in {@link ArchiCodeParser#atom}.
 	 * @param ctx the parse tree
 	 */
 	void exitFuncCallExpr(ArchiCodeParser.FuncCallExprContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code parenExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
+	 * Enter a parse tree produced by the {@code intExpr}
+	 * labeled alternative in {@link ArchiCodeParser#atom}.
 	 * @param ctx the parse tree
 	 */
-	void enterParenExpr(ArchiCodeParser.ParenExprContext ctx);
+	void enterIntExpr(ArchiCodeParser.IntExprContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code parenExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
+	 * Exit a parse tree produced by the {@code intExpr}
+	 * labeled alternative in {@link ArchiCodeParser#atom}.
 	 * @param ctx the parse tree
 	 */
-	void exitParenExpr(ArchiCodeParser.ParenExprContext ctx);
+	void exitIntExpr(ArchiCodeParser.IntExprContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code boolTrueExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
+	 * Enter a parse tree produced by the {@code floatExpr}
+	 * labeled alternative in {@link ArchiCodeParser#atom}.
 	 * @param ctx the parse tree
 	 */
-	void enterBoolTrueExpr(ArchiCodeParser.BoolTrueExprContext ctx);
+	void enterFloatExpr(ArchiCodeParser.FloatExprContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code boolTrueExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
+	 * Exit a parse tree produced by the {@code floatExpr}
+	 * labeled alternative in {@link ArchiCodeParser#atom}.
 	 * @param ctx the parse tree
 	 */
-	void exitBoolTrueExpr(ArchiCodeParser.BoolTrueExprContext ctx);
+	void exitFloatExpr(ArchiCodeParser.FloatExprContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code stringExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
+	 * labeled alternative in {@link ArchiCodeParser#atom}.
 	 * @param ctx the parse tree
 	 */
 	void enterStringExpr(ArchiCodeParser.StringExprContext ctx);
 	/**
 	 * Exit a parse tree produced by the {@code stringExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
+	 * labeled alternative in {@link ArchiCodeParser#atom}.
 	 * @param ctx the parse tree
 	 */
 	void exitStringExpr(ArchiCodeParser.StringExprContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code negateExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
+	 * Enter a parse tree produced by the {@code charExpr}
+	 * labeled alternative in {@link ArchiCodeParser#atom}.
 	 * @param ctx the parse tree
 	 */
-	void enterNegateExpr(ArchiCodeParser.NegateExprContext ctx);
+	void enterCharExpr(ArchiCodeParser.CharExprContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code negateExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
+	 * Exit a parse tree produced by the {@code charExpr}
+	 * labeled alternative in {@link ArchiCodeParser#atom}.
 	 * @param ctx the parse tree
 	 */
-	void exitNegateExpr(ArchiCodeParser.NegateExprContext ctx);
+	void exitCharExpr(ArchiCodeParser.CharExprContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code varExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
+	 * Enter a parse tree produced by the {@code boolTrueExpr}
+	 * labeled alternative in {@link ArchiCodeParser#atom}.
 	 * @param ctx the parse tree
 	 */
-	void enterVarExpr(ArchiCodeParser.VarExprContext ctx);
+	void enterBoolTrueExpr(ArchiCodeParser.BoolTrueExprContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code varExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
+	 * Exit a parse tree produced by the {@code boolTrueExpr}
+	 * labeled alternative in {@link ArchiCodeParser#atom}.
 	 * @param ctx the parse tree
 	 */
-	void exitVarExpr(ArchiCodeParser.VarExprContext ctx);
+	void exitBoolTrueExpr(ArchiCodeParser.BoolTrueExprContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code funcCallNoParensExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
+	 * Enter a parse tree produced by the {@code boolFalseExpr}
+	 * labeled alternative in {@link ArchiCodeParser#atom}.
 	 * @param ctx the parse tree
 	 */
-	void enterFuncCallNoParensExpr(ArchiCodeParser.FuncCallNoParensExprContext ctx);
+	void enterBoolFalseExpr(ArchiCodeParser.BoolFalseExprContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code funcCallNoParensExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
+	 * Exit a parse tree produced by the {@code boolFalseExpr}
+	 * labeled alternative in {@link ArchiCodeParser#atom}.
 	 * @param ctx the parse tree
 	 */
-	void exitFuncCallNoParensExpr(ArchiCodeParser.FuncCallNoParensExprContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code eqExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void enterEqExpr(ArchiCodeParser.EqExprContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code eqExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void exitEqExpr(ArchiCodeParser.EqExprContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code ltExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void enterLtExpr(ArchiCodeParser.LtExprContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code ltExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void exitLtExpr(ArchiCodeParser.LtExprContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code notExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void enterNotExpr(ArchiCodeParser.NotExprContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code notExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void exitNotExpr(ArchiCodeParser.NotExprContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code logicExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void enterLogicExpr(ArchiCodeParser.LogicExprContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code logicExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void exitLogicExpr(ArchiCodeParser.LogicExprContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code mulDivExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void enterMulDivExpr(ArchiCodeParser.MulDivExprContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code mulDivExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void exitMulDivExpr(ArchiCodeParser.MulDivExprContext ctx);
+	void exitBoolFalseExpr(ArchiCodeParser.BoolFalseExprContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code stepExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
+	 * labeled alternative in {@link ArchiCodeParser#atom}.
 	 * @param ctx the parse tree
 	 */
 	void enterStepExpr(ArchiCodeParser.StepExprContext ctx);
 	/**
 	 * Exit a parse tree produced by the {@code stepExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
+	 * labeled alternative in {@link ArchiCodeParser#atom}.
 	 * @param ctx the parse tree
 	 */
 	void exitStepExpr(ArchiCodeParser.StepExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code varExpr}
+	 * labeled alternative in {@link ArchiCodeParser#atom}.
+	 * @param ctx the parse tree
+	 */
+	void enterVarExpr(ArchiCodeParser.VarExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code varExpr}
+	 * labeled alternative in {@link ArchiCodeParser#atom}.
+	 * @param ctx the parse tree
+	 */
+	void exitVarExpr(ArchiCodeParser.VarExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code parenExpr}
+	 * labeled alternative in {@link ArchiCodeParser#atom}.
+	 * @param ctx the parse tree
+	 */
+	void enterParenExpr(ArchiCodeParser.ParenExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code parenExpr}
+	 * labeled alternative in {@link ArchiCodeParser#atom}.
+	 * @param ctx the parse tree
+	 */
+	void exitParenExpr(ArchiCodeParser.ParenExprContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link ArchiCodeParser#exprList}.
 	 * @param ctx the parse tree

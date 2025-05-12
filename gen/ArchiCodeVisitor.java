@@ -115,131 +115,123 @@ public interface ArchiCodeVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitBlock(ArchiCodeParser.BlockContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code charExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
+	 * Visit a parse tree produced by {@link ArchiCodeParser#expr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitCharExpr(ArchiCodeParser.CharExprContext ctx);
+	T visitExpr(ArchiCodeParser.ExprContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code intExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
+	 * Visit a parse tree produced by {@link ArchiCodeParser#orExpr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitIntExpr(ArchiCodeParser.IntExprContext ctx);
+	T visitOrExpr(ArchiCodeParser.OrExprContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code addSubExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
+	 * Visit a parse tree produced by {@link ArchiCodeParser#andExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAndExpr(ArchiCodeParser.AndExprContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ArchiCodeParser#equalityExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEqualityExpr(ArchiCodeParser.EqualityExprContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ArchiCodeParser#relationalExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRelationalExpr(ArchiCodeParser.RelationalExprContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ArchiCodeParser#addSubExpr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitAddSubExpr(ArchiCodeParser.AddSubExprContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code gtExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitGtExpr(ArchiCodeParser.GtExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code boolFalseExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitBoolFalseExpr(ArchiCodeParser.BoolFalseExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code funcCallExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitFuncCallExpr(ArchiCodeParser.FuncCallExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code parenExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitParenExpr(ArchiCodeParser.ParenExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code boolTrueExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitBoolTrueExpr(ArchiCodeParser.BoolTrueExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code stringExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitStringExpr(ArchiCodeParser.StringExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code negateExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitNegateExpr(ArchiCodeParser.NegateExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code varExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitVarExpr(ArchiCodeParser.VarExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code funcCallNoParensExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitFuncCallNoParensExpr(ArchiCodeParser.FuncCallNoParensExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code eqExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitEqExpr(ArchiCodeParser.EqExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code ltExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitLtExpr(ArchiCodeParser.LtExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code notExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitNotExpr(ArchiCodeParser.NotExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code logicExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitLogicExpr(ArchiCodeParser.LogicExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code mulDivExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
+	 * Visit a parse tree produced by {@link ArchiCodeParser#mulDivExpr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitMulDivExpr(ArchiCodeParser.MulDivExprContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link ArchiCodeParser#unaryExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitUnaryExpr(ArchiCodeParser.UnaryExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code funcCallExpr}
+	 * labeled alternative in {@link ArchiCodeParser#atom}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFuncCallExpr(ArchiCodeParser.FuncCallExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code intExpr}
+	 * labeled alternative in {@link ArchiCodeParser#atom}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIntExpr(ArchiCodeParser.IntExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code floatExpr}
+	 * labeled alternative in {@link ArchiCodeParser#atom}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFloatExpr(ArchiCodeParser.FloatExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code stringExpr}
+	 * labeled alternative in {@link ArchiCodeParser#atom}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStringExpr(ArchiCodeParser.StringExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code charExpr}
+	 * labeled alternative in {@link ArchiCodeParser#atom}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCharExpr(ArchiCodeParser.CharExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code boolTrueExpr}
+	 * labeled alternative in {@link ArchiCodeParser#atom}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBoolTrueExpr(ArchiCodeParser.BoolTrueExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code boolFalseExpr}
+	 * labeled alternative in {@link ArchiCodeParser#atom}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBoolFalseExpr(ArchiCodeParser.BoolFalseExprContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code stepExpr}
-	 * labeled alternative in {@link ArchiCodeParser#expr}.
+	 * labeled alternative in {@link ArchiCodeParser#atom}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitStepExpr(ArchiCodeParser.StepExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code varExpr}
+	 * labeled alternative in {@link ArchiCodeParser#atom}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitVarExpr(ArchiCodeParser.VarExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code parenExpr}
+	 * labeled alternative in {@link ArchiCodeParser#atom}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParenExpr(ArchiCodeParser.ParenExprContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link ArchiCodeParser#exprList}.
 	 * @param ctx the parse tree

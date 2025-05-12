@@ -70,25 +70,43 @@ block
     ;
 
 expr
-    : '-' expr                            # negateExpr
-    | 'not' expr                          # notExpr
-    | expr op=('*'|'/') expr              # mulDivExpr
-    | expr op=('+'|'-') expr              # addSubExpr
-    | expr '==' expr                      # eqExpr
-    | expr '<' expr                       # ltExpr
-    | expr '>' expr                       # gtExpr
-    | expr 'and' expr                     # andExpr
-    | expr 'or' expr                      # orExpr
-    | CapitalVarName '(' exprList? ')'    # funcCallExpr
-    | CapitalVarName expr+ ';'?           # funcCallNoParensExpr
-    | INT                                 # intExpr
-    | STRING                              # stringExpr
-    | CHAR                                # charExpr
-    | 'true'                              # boolTrueExpr
-    | 'false'                             # boolFalseExpr
-    | 'step' ('@' INT)?                   # stepExpr
-    | VarName                             # varExpr
-    | '(' expr ')'                        # parenExpr
+    : orExpr
+    ;
+orExpr
+    : andExpr ('or' andExpr)*
+    ;
+andExpr
+    : equalityExpr ('and' equalityExpr)*
+    ;
+equalityExpr
+    : relationalExpr (('==' | '!=') relationalExpr )*
+    ;
+relationalExpr
+    : addSubExpr (('<' | '>' |'<=' | '>=') addSubExpr)*
+    ;
+addSubExpr
+    : mulDivExpr (('+' | '-') mulDivExpr)*
+    ;
+mulDivExpr
+    : unaryExpr (('*' | '/') unaryExpr)*
+    ;
+unaryExpr
+    : '-' unaryExpr
+    | '+' unaryExpr
+    | 'not' unaryExpr
+    | atom
+    ;
+atom
+    : CapitalVarName expr+ ';'?                     # funcCallExpr
+    | INT                                           # intExpr
+    | FLOAT                                         # floatExpr
+    | STRING                                        # stringExpr
+    | CHAR                                          # charExpr
+    | 'true'                                        # boolTrueExpr
+    | 'false'                                       # boolFalseExpr
+    | 'step' ('@' INT)?                             # stepExpr
+    | VarName                                       # varExpr
+    | '(' expr ')'                                  # parenExpr
     ;
 
 exprList
@@ -111,8 +129,12 @@ INT
     : [0-9]+
     ;
 
+FLOAT
+    : [0-9]+ '.' [0-9]+
+    ;
+
 CHAR
-    : '\'' . '\''
+    : '\'' (ESC | ~['\\]) '\''
     ;
 
 STRING
