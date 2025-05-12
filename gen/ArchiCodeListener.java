@@ -255,6 +255,18 @@ public interface ArchiCodeListener extends ParseTreeListener {
 	 */
 	void exitFuncCallExpr(ArchiCodeParser.FuncCallExprContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code parenExpr}
+	 * labeled alternative in {@link ArchiCodeParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterParenExpr(ArchiCodeParser.ParenExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code parenExpr}
+	 * labeled alternative in {@link ArchiCodeParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitParenExpr(ArchiCodeParser.ParenExprContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code boolTrueExpr}
 	 * labeled alternative in {@link ArchiCodeParser#expr}.
 	 * @param ctx the parse tree
@@ -278,6 +290,18 @@ public interface ArchiCodeListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitStringExpr(ArchiCodeParser.StringExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code negateExpr}
+	 * labeled alternative in {@link ArchiCodeParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterNegateExpr(ArchiCodeParser.NegateExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code negateExpr}
+	 * labeled alternative in {@link ArchiCodeParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitNegateExpr(ArchiCodeParser.NegateExprContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code varExpr}
 	 * labeled alternative in {@link ArchiCodeParser#expr}.

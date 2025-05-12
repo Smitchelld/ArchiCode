@@ -127,7 +127,11 @@ public class ArchiCodeInterpreter extends ArchiCodeBaseVisitor<Object> {
         Object left = visit(ctx.expr(0));
         Object right = visit(ctx.expr(1));
         String op = ctx.op.getText();
-
+        if(op.equals("/") && right instanceof Integer && right.equals(0)) {
+            int line = ctx.getStart().getLine();
+            System.err.println("Błąd (linia " + line + "): Nie można dzielić przez 0");
+            System.exit(1);
+        }
         if (left instanceof Integer && right instanceof Integer) {
             int a = (Integer) left;
             int b = (Integer) right;
@@ -192,6 +196,22 @@ public class ArchiCodeInterpreter extends ArchiCodeBaseVisitor<Object> {
     public Object visitStringExpr(ArchiCodeParser.StringExprContext ctx) {
         String text = ctx.getText();
         return text.substring(1, text.length() - 1); // usuń cudzysłowy
+    }
+
+    @Override
+    public Object visitNegateExpr(ArchiCodeParser.NegateExprContext ctx) {
+        Object value = visit(ctx.expr());
+        if (value instanceof Integer) return -((Integer) value);
+        if (value instanceof Float) return -((Float) value);
+        int line = ctx.getStart().getLine();
+        System.err.println("Błąd (linia " + line + "): operator '-' wymaga liczby.");
+        System.exit(1);
+        return null;
+    }
+
+    @Override
+    public Object visitParenExpr(ArchiCodeParser.ParenExprContext ctx) {
+        return visit(ctx.expr());
     }
 
     private String inferType(Object value) {

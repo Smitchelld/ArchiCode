@@ -157,6 +157,13 @@ public interface ArchiCodeVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFuncCallExpr(ArchiCodeParser.FuncCallExprContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code parenExpr}
+	 * labeled alternative in {@link ArchiCodeParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParenExpr(ArchiCodeParser.ParenExprContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code boolTrueExpr}
 	 * labeled alternative in {@link ArchiCodeParser#expr}.
 	 * @param ctx the parse tree
@@ -170,6 +177,13 @@ public interface ArchiCodeVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitStringExpr(ArchiCodeParser.StringExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code negateExpr}
+	 * labeled alternative in {@link ArchiCodeParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNegateExpr(ArchiCodeParser.NegateExprContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code varExpr}
 	 * labeled alternative in {@link ArchiCodeParser#expr}.

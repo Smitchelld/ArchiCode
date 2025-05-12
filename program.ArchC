@@ -2,13 +2,11 @@ Core() delivers int testResult {
     >> Deklaracja zmiennych liczbowych
     define a = 10
     define b = 5
-    define c = a + b
-
     show "a ="
     show a
     show "b ="
     show b
-
+    define c = a + b
     show "a + b ="
     show c
 
@@ -35,14 +33,11 @@ Core() delivers int testResult {
     define greeting = "Hello, ArchiCode"
     show greeting
 
-    >> Próba redeklaracji (powinna wywołać błąd jeśli odkomentujesz)
+    >> Próba redeklaracji (powinna wywołać błąd)
 
     >>define a = 99
 
     >> Użycie niezadeklarowanej zmiennej (powinien być błąd)
-
     >>show notDeclaredVar
-
 }
-
 

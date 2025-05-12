@@ -1,0 +1,4 @@
+Core() delivers int testResult {
+    define bool a = true == false
+    show a
+}

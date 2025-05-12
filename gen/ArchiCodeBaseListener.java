@@ -292,6 +292,18 @@ public class ArchiCodeBaseListener implements ArchiCodeListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterParenExpr(ArchiCodeParser.ParenExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitParenExpr(ArchiCodeParser.ParenExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterBoolTrueExpr(ArchiCodeParser.BoolTrueExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -311,6 +323,18 @@ public class ArchiCodeBaseListener implements ArchiCodeListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitStringExpr(ArchiCodeParser.StringExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNegateExpr(ArchiCodeParser.NegateExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNegateExpr(ArchiCodeParser.NegateExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

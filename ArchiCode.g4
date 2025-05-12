@@ -70,13 +70,15 @@ block
     ;
 
 expr
-    : 'not' expr                          # notExpr
-    | expr op=('and' | 'or') expr         # logicExpr
+    : '-' expr                            # negateExpr
+    | 'not' expr                          # notExpr
     | expr op=('*'|'/') expr              # mulDivExpr
     | expr op=('+'|'-') expr              # addSubExpr
     | expr '==' expr                      # eqExpr
     | expr '<' expr                       # ltExpr
     | expr '>' expr                       # gtExpr
+    | expr 'and' expr                     # andExpr
+    | expr 'or' expr                      # orExpr
     | CapitalVarName '(' exprList? ')'    # funcCallExpr
     | CapitalVarName expr+ ';'?           # funcCallNoParensExpr
     | INT                                 # intExpr
@@ -86,6 +88,7 @@ expr
     | 'false'                             # boolFalseExpr
     | 'step' ('@' INT)?                   # stepExpr
     | VarName                             # varExpr
+    | '(' expr ')'                        # parenExpr
     ;
 
 exprList
