@@ -1,17 +1,16 @@
-blueprint AddTwo(int a, int b) delivers int result = 0{
-    result = a + b
-}
 
-blueprint AddTwo(int a) delivers int result = 0{
-    result = a + 2
-}
-
-blueprint AddTwo(int a, string b) delivers int result = 0{
-    show b
-}
 
 Core() delivers int testResult {
-    define test = AddTwo 2 "test"
-    show test
+    check 2 > 3 then{
+        show "2 > 1"
+    }otherwise check false then{
+        show "otherwise check"
+    }otherwise{
+        show "otherwise"
+    }
+
+
 }
+
+
 

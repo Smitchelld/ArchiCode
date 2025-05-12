@@ -56,7 +56,7 @@ param
     ;
 
 repeatStatement
-    : 'repeat' INT block                            # repeatFixed
+    : 'repeat' expr block                            # repeatFixed
     | 'repeat' 'until' expr block                   # repeatUntil
     | 'repeat' 'for' VarName 'in' VarName block     # repeatFor
     ;

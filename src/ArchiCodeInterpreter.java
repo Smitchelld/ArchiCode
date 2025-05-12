@@ -29,6 +29,11 @@ public class ArchiCodeInterpreter extends ArchiCodeBaseVisitor<Object> {
                 coreExecuted = true;
                 visit(stmt);
             } else if (stmt.blueprintStatement() != null) {
+                if( coreExecuted ) {
+                    int line = stmt.getStart().getLine();
+                    System.err.println("Błąd (linia " + line + "): deklaracja blueprint jest dozwolona tylko nad blokiem Core.");
+                    System.exit(1);
+                }
                 visit(stmt);
             } else {
                 int line = stmt.getStart().getLine();
@@ -363,6 +368,63 @@ public class ArchiCodeInterpreter extends ArchiCodeBaseVisitor<Object> {
             System.exit(1);
         }
         return ret;
+    }
+
+    @Override
+    public Object visitRepeatFixed(ArchiCodeParser.RepeatFixedContext ctx) {
+        if(ctx.expr() == null) {
+            int line = ctx.getStart().getLine();
+            System.err.println("Błąd (linia " + line + "): repeat wymaga parametru liczbowego");
+            System.exit(1);
+        }
+        var cntObj = visit(ctx.expr());
+        if(!(cntObj instanceof Integer)) {
+            int line = ctx.getStart().getLine();
+            System.err.println("Błąd (linia " + line + "): repeat wymaga parametru liczbowego");
+            System.exit(1);
+        }
+        int cnt = (int)cntObj;
+        if(cnt < 0) {
+            int line = ctx.getStart().getLine();
+            System.err.println("Błąd (linia " + line + "): repeat wymaga dodatniego parametru liczbowego");
+            System.exit(1);
+        }
+        for(int i = 0; i < cnt; i++) {
+            visit(ctx.block());
+        }
+        return null;
+    }
+
+    @Override
+    public Object visitRepeatUntil(ArchiCodeParser.RepeatUntilContext ctx) {
+        return super.visitRepeatUntil(ctx);
+    }
+
+    @Override
+    public Object visitCheckStatement(ArchiCodeParser.CheckStatementContext ctx) {
+        Object conditionValue = visit(ctx.expr());
+
+        if (!(conditionValue instanceof Boolean)) {
+            int line = ctx.getStart().getLine();
+            System.err.println("Błąd (linia " + line + "): Warunek w 'check' nie zwraca wartości typu Boolean.");
+            System.exit(1);
+        }
+
+        boolean condition = (Boolean) conditionValue;
+
+        if (condition) {
+            return visit(ctx.block(0));
+        } else {
+            if (ctx.getChildCount() > 4) {
+                if (ctx.checkStatement() != null) {
+                    return visit(ctx.checkStatement());
+                } else if (ctx.block(1) != null) {
+                    return visit(ctx.block(1));
+                }
+            }
+        }
+
+        return null;
     }
 
     private String inferType(Object value) {
