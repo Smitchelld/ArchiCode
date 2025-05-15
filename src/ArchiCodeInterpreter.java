@@ -1,17 +1,15 @@
-import org.antlr.v4.runtime.tree.ParseTree;
-
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class ArchiCodeInterpreter extends ArchiCodeBaseVisitor<Object> {
     private final Map<String, String> symbolTable;
     private final Map<String, Variable> variables = new HashMap<>();
-    private final Map<String, Map <String, Blueprint>> blueprints = new HashMap<>();
+    private final Map<String, Map <String, Blueprint>> blueprints;
 
 
-    public ArchiCodeInterpreter(Map<String, String> symbolTable) {
+    public ArchiCodeInterpreter(Map<String, String> symbolTable, Map<String, Map<String, Blueprint>> sharedBlueprints) {
         this.symbolTable = symbolTable;
+        this.blueprints =sharedBlueprints;
     }
 
     @Override
@@ -159,14 +157,25 @@ public class ArchiCodeInterpreter extends ArchiCodeBaseVisitor<Object> {
     @Override
     public Object visitEqualityExpr(ArchiCodeParser.EqualityExprContext ctx) {
         Object left = visit(ctx.relationalExpr(0));
-        for(int i = 1; i < ctx.relationalExpr().size(); i++) {
+        for (int i = 1; i < ctx.relationalExpr().size(); i++) {
             Object right = visit(ctx.relationalExpr(i));
-            String op = ctx.getChild(2*i - 1).getText();
-            left = switch (op) {
-                case "==" -> left.equals(right);
-                case "!=" -> !left.equals(right);
-                default -> left;
-            };
+            String op = ctx.getChild(2 * i - 1).getText();
+
+            if (left instanceof Number && right instanceof Number) {
+                float l = ((Number) left).floatValue();
+                float r = ((Number) right).floatValue();
+                left = switch (op) {
+                    case "==" -> l == r;
+                    case "!=" -> l != r;
+                    default -> left;
+                };
+            } else {
+                left = switch (op) {
+                    case "==" -> left.equals(right);
+                    case "!=" -> !left.equals(right);
+                    default -> left;
+                };
+            }
         }
         return left;
     }
@@ -174,23 +183,25 @@ public class ArchiCodeInterpreter extends ArchiCodeBaseVisitor<Object> {
     @Override
     public Object visitRelationalExpr(ArchiCodeParser.RelationalExprContext ctx) {
         Object left = visit(ctx.addSubExpr(0));
-        for(int i = 1; i < ctx.addSubExpr().size(); i++) {
+        for (int i = 1; i < ctx.addSubExpr().size(); i++) {
             Object right = visit(ctx.addSubExpr(i));
-            String op = ctx.getChild(2*i - 1).getText();
-            if(!(left instanceof Integer) || !(right instanceof Integer)) {
+            String op = ctx.getChild(2 * i - 1).getText();
+
+            if (!(left instanceof Number) || !(right instanceof Number)) {
                 int line = ctx.getStart().getLine();
-                System.err.println("Błąd (linia " + line + "): Nie można porównać:" + left.getClass().getSimpleName() + " i " + right.getClass().getSimpleName());
+                System.err.println("Błąd (linia " + line + "): Nie można porównać: " + left.getClass().getSimpleName() + " i " + right.getClass().getSimpleName());
                 System.exit(1);
             }
-            int l = (int)left;
-            int r = (int)right;
-            left = switch(op){
-                case "<" -> l < r;
-                case ">" -> l > r;
-                case "<=" -> l <= r;
-                case ">=" -> l >= r;
-                default -> left;
-            };
+
+            float l = ((Number) left).floatValue();
+            float r = ((Number) right).floatValue();
+
+            switch (op) {
+                case "<" -> left = l < r;
+                case ">" -> left = l > r;
+                case "<=" -> left = l <= r;
+                case ">=" -> left = l >= r;
+            }
         }
         return left;
     }
@@ -198,60 +209,111 @@ public class ArchiCodeInterpreter extends ArchiCodeBaseVisitor<Object> {
     @Override
     public Object visitAddSubExpr(ArchiCodeParser.AddSubExprContext ctx) {
         Object left = visit(ctx.mulDivExpr(0));
-        for(int i = 1; i < ctx.mulDivExpr().size(); i++) {
+
+        for (int i = 1; i < ctx.mulDivExpr().size(); i++) {
             Object right = visit(ctx.mulDivExpr(i));
             String op = ctx.getChild(2 * i - 1).getText();
-            if (!(left instanceof Integer) || !(right instanceof Integer)) {
+
+            if (!(left instanceof Number) || !(right instanceof Number)) {
                 int line = ctx.getStart().getLine();
-                System.err.println("Błąd (linia " + line + "): Nie można dodawać/odejmować:" + left.getClass().getSimpleName() + " i " + right.getClass().getSimpleName());
+                System.err.println("Błąd (linia " + line + "): Operacja arytmetyczna tylko na liczbach.");
                 System.exit(1);
             }
-            int l = (int) left;
-            int r = (int) right;
-            left = switch (op) {
-                case "+" -> l + r;
-                case "-" -> l - r;
-                default -> left;
-            };
+
+            // Sprawdź typy oryginalne
+            boolean leftIsFloat = left instanceof Float;
+            boolean rightIsFloat = right instanceof Float;
+
+            if (!leftIsFloat && !rightIsFloat) {
+                // int + int = int
+                int l = ((Integer) left);
+                int r = ((Integer) right);
+                left = switch (op) {
+                    case "+" -> l + r;
+                    case "-" -> l - r;
+                    default -> throw new RuntimeException("Nieznany operator: " + op);
+                };
+            } else {
+                // float + coś = float
+                float l = ((Number) left).floatValue();
+                float r = ((Number) right).floatValue();
+                left = switch (op) {
+                    case "+" -> l + r;
+                    case "-" -> l - r;
+                    default -> throw new RuntimeException("Nieznany operator: " + op);
+                };
+            }
         }
+
         return left;
     }
 
     @Override
     public Object visitMulDivExpr(ArchiCodeParser.MulDivExprContext ctx) {
         Object left = visit(ctx.unaryExpr(0));
-        for(int i = 1; i < ctx.unaryExpr().size(); i++) {
+
+        for (int i = 1; i < ctx.unaryExpr().size(); i++) {
             Object right = visit(ctx.unaryExpr(i));
             String op = ctx.getChild(2 * i - 1).getText();
-            if (!(left instanceof Integer) || !(right instanceof Integer)) {
+
+            if (!(left instanceof Number) || !(right instanceof Number)) {
                 int line = ctx.getStart().getLine();
-                System.err.println("Błąd (linia " + line + "): Nie można mnożyć/dzielić:" + left.getClass().getSimpleName() + " i " + right.getClass().getSimpleName());
+                System.err.println("Błąd (linia " + line + "): Operacja arytmetyczna tylko na liczbach.");
                 System.exit(1);
             }
-            int l = (int) left;
-            int r = (int) right;
-            if (op.equals("/") && r == 0) {
-                int line = ctx.getStart().getLine();
-                System.err.println("Błąd (linia " + line + "): Nie można dzielić przez 0");
-                System.exit(1);
+
+            boolean leftIsFloat = left instanceof Float;
+            boolean rightIsFloat = right instanceof Float;
+
+            switch (op) {
+                case "*":
+                    if (!leftIsFloat && !rightIsFloat) {
+                        left = ((Integer) left) * ((Integer) right);
+                    } else {
+                        float l = ((Number) left).floatValue();
+                        float r = ((Number) right).floatValue();
+                        left = l * r;
+                    }
+                    break;
+
+                case "/":
+                    if (!leftIsFloat && !rightIsFloat) {
+                        int divisor = (Integer) right;
+                        if (divisor == 0) {
+                            int line = ctx.getStart().getLine();
+                            System.err.println("Błąd (linia " + line + "): Dzielenie przez 0");
+                            System.exit(1);
+                        }
+                        left = ((Integer) left) / divisor;
+                    } else {
+                        float l = ((Number) left).floatValue();
+                        float r = ((Number) right).floatValue();
+                        if (r == 0.0f) {
+                            int line = ctx.getStart().getLine();
+                            System.err.println("Błąd (linia " + line + "): Dzielenie przez 0");
+                            System.exit(1);
+                        }
+                        left = l / r;
+                    }
+                    break;
+
+                default:
+                    throw new RuntimeException("Nieznany operator: " + op);
             }
-            left = switch (op) {
-                case "*" -> l * r;
-                case "/" -> l / r;
-                default -> left;
-            };
         }
+
         return left;
     }
 
     @Override
     public Object visitUnaryExpr(ArchiCodeParser.UnaryExprContext ctx) {
-        if(ctx.getChildCount() == 2) {
+        if (ctx.getChildCount() == 2) {
             String op = ctx.getChild(0).getText();
             Object value = visit(ctx.unaryExpr());
+
             return switch (op) {
-                case "-" -> -(int) value;
-                case "+" -> +(int) value;
+                case "-" -> (value instanceof Float) ? -((Float) value) : -((Integer) value);
+                case "+" -> value;
                 case "not" -> !(boolean) value;
                 default -> value;
             };
@@ -268,25 +330,34 @@ public class ArchiCodeInterpreter extends ArchiCodeBaseVisitor<Object> {
     public Object visitBlueprintStatement(ArchiCodeParser.BlueprintStatementContext ctx) {
         String blueprintName = ctx.CapitalVarName().getText();
         String signature = Blueprint.generateSignature(ctx.paramList());
-        Object returnValue = visit(ctx.expr());
-        String returnName = ctx.VarName().getText();
-        Variable returnVariable = new Variable(VarType.fromString(ctx.type().getText()), returnValue);
         Map<String, String> params = new HashMap<>();
-        if(ctx.paramList() != null) {
-            for(ArchiCodeParser.ParamContext param : ctx.paramList().param()) {
+
+        if (ctx.paramList() != null) {
+            for (ArchiCodeParser.ParamContext param : ctx.paramList().param()) {
                 params.put(param.VarName().getText(), param.type().getText());
             }
         }
 
-        Blueprint blueprint = new Blueprint(blueprintName, signature, params, ctx.block(),returnName, returnVariable);
+        Blueprint blueprint;
+        if (ctx.type() != null && ctx.VarName() != null) {
+            // Funkcja z wartością zwracaną
+            Object returnValue = visit(ctx.expr());
+            String returnName = ctx.VarName().getText();
+            Variable returnVariable = new Variable(VarType.fromString(ctx.type().getText()), returnValue);
+            blueprint = new Blueprint(blueprintName, signature, params, ctx.block(), returnName, returnVariable);
+        } else {
+            // Funkcja void
+            blueprint = new Blueprint(blueprintName, signature, params, ctx.block());
+        }
+
         blueprints.computeIfAbsent(blueprintName, k -> new HashMap<>());
-        Map<String, Blueprint> overloads = blueprints.get(blueprintName);
-        if(overloads.containsKey(signature)) {
+        if (blueprints.get(blueprintName).containsKey(signature)) {
             int line = ctx.getStart().getLine();
-            System.err.println("Błąd (linia " + line + "): Blueprint: " +blueprintName+"("+ signature + ") został już zdefiniowany.");
+            System.err.println("Błąd (linia " + line + "): Blueprint " + blueprintName + "(" + signature + ") już istnieje.");
             System.exit(1);
         }
-        overloads.put(signature, blueprint);
+
+        blueprints.get(blueprintName).put(signature, blueprint);
         return null;
     }
 
@@ -307,7 +378,7 @@ public class ArchiCodeInterpreter extends ArchiCodeBaseVisitor<Object> {
             System.exit(1);
         }
         Blueprint blueprint = overloads.get(signature);
-        Map<String, Variable> localVariables = new HashMap<>(variables);
+        Map<String, Variable> localVariables = new HashMap<>();
         for(int i = 0; i < blueprint.getParams().size(); i++) {
             String paramName = blueprint.getParams().keySet().toArray(new String[0])[i];
             Object paramValue = visit(ctx.expr(i));
@@ -320,7 +391,7 @@ public class ArchiCodeInterpreter extends ArchiCodeBaseVisitor<Object> {
             localVariables.put(paramName, new Variable(VarType.fromString(paramType), paramValue));
         }
 
-        ArchiCodeInterpreter localInterpreter = new ArchiCodeInterpreter(symbolTable);
+        ArchiCodeInterpreter localInterpreter = new ArchiCodeInterpreter(symbolTable, blueprints);
         localInterpreter.variables.putAll(localVariables);
 
         return localInterpreter.visit(blueprint.getBlock());
@@ -328,46 +399,51 @@ public class ArchiCodeInterpreter extends ArchiCodeBaseVisitor<Object> {
 
     @Override
     public Object visitFuncCallExpr(ArchiCodeParser.FuncCallExprContext ctx) {
-        //System.out.println("visitBlueprintCallStatement");
         String blueprintName = ctx.CapitalVarName().getText();
         String signature = generateCallSignature(ctx);
-        if(!blueprints.containsKey(blueprintName)) {
+
+        if (!blueprints.containsKey(blueprintName) || !blueprints.get(blueprintName).containsKey(signature)) {
             int line = ctx.getStart().getLine();
-            System.err.println("Błąd (linia " + line + "): Blueprint: " +blueprintName+"("+ signature + ") nie został zdefiniowany.");
+            System.err.println("Błąd (linia " + line + "): Blueprint " + blueprintName + "(" + signature + ") nie został zdefiniowany.");
             System.exit(1);
         }
-        Map<String, Blueprint> overloads = blueprints.get(blueprintName);
-        if(!overloads.containsKey(signature)) {
-            int line = ctx.getStart().getLine();
-            System.err.println("Błąd (linia " + line + "): Blueprint: " +blueprintName+"("+ signature + ") nie został zdefiniowany.");
-            System.exit(1);
-        }
-        Blueprint blueprint = overloads.get(signature);
-        Map<String, Variable> localVariables = new HashMap<>(variables);
-        for(int i = 0; i < blueprint.getParams().size(); i++) {
-            String paramName = blueprint.getParams().keySet().toArray(new String[0])[i];
+
+        Blueprint blueprint = blueprints.get(blueprintName).get(signature);
+        Map<String, Variable> localVariables = new HashMap<>();
+
+        int i = 0;
+        for (String paramName : blueprint.getParams().keySet()) {
             Object paramValue = visit(ctx.expr(i));
             String paramType = inferType(paramValue);
-            if(!paramType.equals(blueprint.getParams().get(paramName))) {
+            if (!paramType.equals(blueprint.getParams().get(paramName))) {
                 int line = ctx.getStart().getLine();
-                System.err.println("Błąd (linia " + line + "): Argument: " +paramName+" wymaga typu" + blueprint.getParams().get(paramName) + ", ale otrzymano: " + paramType);
+                System.err.println("Błąd (linia " + line + "): Argument " + paramName + " wymaga typu " +
+                        blueprint.getParams().get(paramName) + ", otrzymano: " + paramType);
                 System.exit(1);
             }
             localVariables.put(paramName, new Variable(VarType.fromString(paramType), paramValue));
+            i++;
         }
 
-        ArchiCodeInterpreter localInterpreter = new ArchiCodeInterpreter(symbolTable);
-        localInterpreter.variables.put(blueprint.getReturnName(), blueprint.getReturnVariable());
+        ArchiCodeInterpreter localInterpreter = new ArchiCodeInterpreter(symbolTable, blueprints);
         localInterpreter.variables.putAll(localVariables);
 
-        localInterpreter.visit(blueprint.getBlock());
-        var ret = localInterpreter.variables.get(blueprint.getReturnName()).getValue();
-        if(VarType.fromString(inferType(ret)) != blueprint.getReturnVariable().getType()){
-            int line = ctx.getStart().getLine();
-            System.err.println("Błąd (linia " + line + "): Funkcja powinna zwracać" + blueprint.getReturnVariable().getType() + ", ale zwraca: " + inferType(ret));
-            System.exit(1);
+        if (!blueprint.isVoid()) {
+            localInterpreter.variables.put(blueprint.getReturnName(), blueprint.getReturnVariable());
+            localInterpreter.visit(blueprint.getBlock());
+            Object ret = localInterpreter.variables.get(blueprint.getReturnName()).getValue();
+            if (VarType.fromString(inferType(ret)) != blueprint.getReturnVariable().getType()) {
+                int line = ctx.getStart().getLine();
+                System.err.println("Błąd (linia " + line + "): Blueprint powinien zwracać " +
+                        blueprint.getReturnVariable().getType() + ", ale zwrócono " + inferType(ret));
+                System.exit(1);
+            }
+            return ret;
+        } else {
+            // blueprint typu void
+            localInterpreter.visit(blueprint.getBlock());
+            return null;
         }
-        return ret;
     }
 
     @Override
@@ -390,6 +466,7 @@ public class ArchiCodeInterpreter extends ArchiCodeBaseVisitor<Object> {
             System.exit(1);
         }
         for(int i = 0; i < cnt; i++) {
+            variables.put("__step__", new Variable(VarType.INT, i));
             visit(ctx.block());
         }
         return null;
@@ -397,8 +474,20 @@ public class ArchiCodeInterpreter extends ArchiCodeBaseVisitor<Object> {
 
     @Override
     public Object visitRepeatUntil(ArchiCodeParser.RepeatUntilContext ctx) {
-        return super.visitRepeatUntil(ctx);
-        //TODO
+        int i = 0;
+        while (true) {
+            variables.put("__step__", new Variable(VarType.INT, i));
+            visit(ctx.block());
+            Object condition = visit(ctx.expr());
+            if (!(condition instanceof Boolean)) {
+                int line = ctx.getStart().getLine();
+                System.err.println("Błąd (linia " + line + "): warunek w repeat until musi być typu bool.");
+                System.exit(1);
+            }
+            if ((Boolean) condition) break;
+            i++;
+        }
+        return null;
     }
 
     @Override
@@ -426,6 +515,22 @@ public class ArchiCodeInterpreter extends ArchiCodeBaseVisitor<Object> {
         }
 
         return null;
+    }
+
+    @Override
+    public Object visitFloatExpr(ArchiCodeParser.FloatExprContext ctx) {
+        return Float.parseFloat(ctx.getText());
+    }
+
+    @Override
+    public Object visitStepExpr(ArchiCodeParser.StepExprContext ctx) {
+        if (!variables.containsKey("__step__")) {
+            int line = ctx.getStart().getLine();
+            System.err.println("Błąd (linia " + line + "): 'step' może być używane tylko wewnątrz pętli.");
+            System.exit(1);
+        }
+
+        return variables.get("__step__").getValue();
     }
 
     private String inferType(Object value) {
@@ -456,7 +561,7 @@ public class ArchiCodeInterpreter extends ArchiCodeBaseVisitor<Object> {
             String type = inferType(value);
             signature.append(type).append(",");
         }
-        if (signature.length() > 0) {
+        if (!signature.isEmpty()) {
             signature.setLength(signature.length() - 1);
         }
 

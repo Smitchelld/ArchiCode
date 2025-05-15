@@ -8,6 +8,7 @@ public class Blueprint {
     private final ArchiCodeParser.BlockContext block;
     private final String returnName;
     private final Variable returnVariable;
+    private final boolean isVoid;
 
     public Blueprint(String name, String signature, Map<String, String> params, ArchiCodeParser.BlockContext block,String returnName ,Variable returnVariable) {
         this.name = name;
@@ -16,7 +17,24 @@ public class Blueprint {
         this.block = block;
         this.returnName = returnName;
         this.returnVariable = returnVariable;
+        this.isVoid = false;
+
     }
+
+    public Blueprint(String name, String signature, Map<String, String> params, ArchiCodeParser.BlockContext block) {
+        this.name = name;
+        this.signature = signature;
+        this.params = params;
+        this.block = block;
+        this.returnName = null;
+        this.returnVariable = null;
+        this.isVoid = true;
+    }
+
+    public boolean isVoid() {
+        return isVoid;
+    }
+
     public String getName() {
         return name;
     }

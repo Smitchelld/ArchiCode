@@ -2,11 +2,24 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        CharStream input = CharStreams.fromFileName("program.ArchC");
+        InputStream stream = System.in;
+        Scanner scanner = new Scanner(stream);
+        String inputCons = scanner.nextLine();
+        CharStream input;
+        if(inputCons.isEmpty()) {
+             input = CharStreams.fromFileName("program.ArchC");
+        }
+        else {
+           input = CharStreams.fromFileName(inputCons);
+        }
         ArchiCodeLexer lexer = new ArchiCodeLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         ArchiCodeParser parser = new ArchiCodeParser(tokens);
@@ -24,7 +37,8 @@ public class Main {
         VariableCollector symbolListener = new VariableCollector();
         walker.walk(symbolListener, tree);
 
-        ArchiCodeInterpreter interpreter = new ArchiCodeInterpreter(symbolListener.getSymbolTable());
+        Map<String, Map<String, Blueprint>> sharedBlueprints = new HashMap<>();
+        ArchiCodeInterpreter interpreter = new ArchiCodeInterpreter(symbolListener.getSymbolTable(), sharedBlueprints);
         interpreter.visit(tree);
     }
 }

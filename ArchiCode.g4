@@ -19,6 +19,7 @@ coreStatement
     : 'Core' '(' paramList? ')' 'delivers' type VarName block
     ;
 
+
 showStatement
     : 'show' expr
     ;
@@ -40,7 +41,7 @@ requestStatement
     ;
 
 blueprintStatement
-    : 'blueprint' CapitalVarName '(' paramList? ')' 'delivers' type VarName ('=' expr)? block
+    : 'blueprint' CapitalVarName '(' paramList? ')' ('delivers' type VarName ('=' expr)?)? block
     ;
 
 blueprintCallStatement
@@ -107,6 +108,7 @@ atom
     | 'step' ('@' INT)?                             # stepExpr
     | VarName                                       # varExpr
     | '(' expr ')'                                  # parenExpr
+    | 'step'                                        # stepExpr
     ;
 
 exprList

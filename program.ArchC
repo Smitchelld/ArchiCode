@@ -1,16 +1,45 @@
+blueprint AddInts(int a, int b) delivers int sum = 0 {
+    sum = a + b
+    >> funkcja dodająca dwie liczby całkowite i zwracająca wynik
+}
 
+blueprint MultiplyFloat(float x, float y) delivers float result = 0{
+    result = x * y
+    >> funkcja mnożąca dwie liczby zmiennoprzecinkowe
+}
 
-Core() delivers int testResult {
-    check 2 > 3 then{
-        show "2 > 1"
-    }otherwise check false then{
-        show "otherwise check"
-    }otherwise{
-        show "otherwise"
+blueprint PrintMessage(string msg) {
+    >> funkcja void wypisująca komunikat
+    show msg
+
+}
+
+blueprint Factorial(int n, int n) delivers int result = 1{
+    show n + n
+}
+
+blueprint FactorialReq(int n) delivers int result = 1{
+    check (n > 1) then{
+        result = n * FactorialReq (n -1)
+    }otherwise {
+        result = 1
     }
 
+}
 
+blueprint Func(int n){
+    define int x = n
+    check (n > 0) then{
+         Func (n-1)
+    }
+    show x
 }
 
 
 
+
+Core() delivers int testResult{
+    >> główny blok programu
+
+    show Func 6
+}
