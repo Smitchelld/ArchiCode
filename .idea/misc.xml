@@ -6,7 +6,7 @@
         <PerGrammarGenerationSettings>
           <option name="fileName" value="$PROJECT_DIR$/ArchiCode.g4" />
           <option name="autoGen" value="true" />
-          <option name="outputDir" value="C:\studia\Kompilator\kompilatorv2.0\src\gen" />
+          <option name="outputDir" value="C:\Users\szyro\IdeaProjects\pz1\ArchiCode\src\gen" />
           <option name="libDir" value="" />
           <option name="encoding" value="" />
           <option name="pkg" value="" />
