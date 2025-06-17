@@ -10,7 +10,8 @@ public class ArchiCodeListenerImpl {
     private void newScope(){
         Variables.push(new HashMap<>());
     }
+
     private void exitScope(){
-        Variables.
+        Variables.pop();
     }
 }
