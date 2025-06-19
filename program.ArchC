@@ -1,7 +1,14 @@
-define x = 21
-define char y = 'f'
+define x = 10
+
 
 Core() delivers int coreResult{
-    show 1 != false
-
+    define stop = false
+    show x < 5 and stop == true
+    repeat until x < 5 and stop == true{
+        x = x - 1
+        show x
+        check x < 0 then{
+            stop = true
+        }
+    }
 }

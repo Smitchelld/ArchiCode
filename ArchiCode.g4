@@ -106,7 +106,7 @@ atom
     | 'true'                                        # boolTrueExpr
     | 'false'                                       # boolFalseExpr
     | 'step' ('@' INT)?                             # stepExpr
-    | VarName                                       # varExpr
+    | VarName ('@' INT)?                            # varExpr
     | '(' expr ')'                                  # parenExpr
     | 'step'                                        # stepExpr
     ;

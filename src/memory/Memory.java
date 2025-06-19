@@ -46,6 +46,19 @@ public class Memory {
         throw new RuntimeException("Variable not found" + name);
     }
 
+    public Value resolveVariable(String name, int scopeDepth) {
+        if(scopeDepth < 0 || scopeDepth > Variables.size() - 1){
+            throw new RuntimeException("Invalid scope depth");
+        }
+        for (int i = Variables.size() - 1 - scopeDepth; i >= 0; i--) {
+            var scope = Variables.get(i);
+            if (scope.containsKey(name)) {
+                return scope.get(name);
+            }
+        }
+        throw new RuntimeException("Variable not found: " + name);
+    }
+
 
 
     public void printVariables() {

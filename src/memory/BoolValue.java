@@ -14,7 +14,7 @@ public class BoolValue extends Value {
     @Override
     public Value and(Value v) {
         if(v.type == Type.BOOL) {
-            return new BoolValue(getBoolean() && v.getBoolean());
+            return getBoolean() && v.getBoolean() ? TRUE : FALSE;
         }
         return super.and(v);
     }
@@ -22,8 +22,16 @@ public class BoolValue extends Value {
     @Override
     public Value or(Value v) {
         if(v.type == Type.BOOL) {
-            return new BoolValue(getBoolean() || v.getBoolean());
+            return getBoolean() || v.getBoolean() ? TRUE : FALSE;
         }
         return super.or(v);
+    }
+
+    @Override
+    public Value eq(Value v) {
+        if(v.type == Type.BOOL) {
+            return getBoolean() == v.getBoolean() ? TRUE : FALSE;
+        }
+        return super.eq(v);
     }
 }

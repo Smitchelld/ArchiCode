@@ -61,27 +61,25 @@ public class Value {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    Value gt(Value v){
+    public Value gt(Value v){
         //TODO
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    Value gte(Value v){
+    public Value gte(Value v){
+        return eq(v).equals(TRUE) || gt(v).equals(TRUE) ? TRUE : FALSE;
+    }
+
+    public Value lt(Value v){
         //TODO
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    Value lt(Value v){
-        //TODO
-        throw new UnsupportedOperationException("Not supported yet.");
+    public Value lte(Value v){
+        return (eq(v).equals(TRUE) || lt(v).equals(TRUE)) ? TRUE : FALSE;
     }
 
-    Value lte(Value v){
-        //TODO
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    Value mod(Value v){
+    public Value mod(Value v){
         //TODO
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -90,7 +88,7 @@ public class Value {
         return eq(v).equals(FALSE) ? TRUE : FALSE;
     }
 
-    Value neg(Value v){
+    public Value neg(){
         //TODO
         throw new UnsupportedOperationException("Not supported yet.");
     }
