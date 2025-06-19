@@ -5,6 +5,8 @@ import memory.*;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ArchiCodeVisitorImpl extends ArchiCodeBaseVisitor<Value> {
 
@@ -13,6 +15,7 @@ public class ArchiCodeVisitorImpl extends ArchiCodeBaseVisitor<Value> {
     PrintStream printStream;
     InputStream inputStream;
 
+    private boolean suppressBlockScope = false;
 
     public ArchiCodeVisitorImpl(Path filePath) {
         this.filePath = filePath;
@@ -125,6 +128,7 @@ public class ArchiCodeVisitorImpl extends ArchiCodeBaseVisitor<Value> {
 
     @Override
     public Value visitBlock(ArchiCodeParser.BlockContext ctx) {
+        if(suppressBlockScope) return null;
         memory.newScope();
         visitChildren(ctx);
         memory.endScope();
@@ -310,10 +314,121 @@ public class ArchiCodeVisitorImpl extends ArchiCodeBaseVisitor<Value> {
     }
 
     @Override
+    public Value visitBlueprintStatement(ArchiCodeParser.BlueprintStatementContext ctx) {
+        String blueprintName = ctx.CapitalVarName().toString();
+        String signature = Blueprint.generateSignature(ctx.paramList());
+        Map<String, String> params = new HashMap<>();
+        if(ctx.paramList() != null){
+            for(var param : ctx.paramList().param()){
+                params.put(param.VarName().getText(), param.type().getText());
+            }
+        }
+        if(ctx.type() != null && ctx.VarName() != null){
+            var returnName = ctx.VarName().getText();
+            var returnValue = visit(ctx.expr());
+            Blueprint blueprint = new Blueprint(blueprintName, signature, params, ctx.block(), returnName, returnValue);
+            memory.createBlueprint(blueprintName, signature, blueprint);
+        }else{
+            Blueprint blueprint = new Blueprint(blueprintName, signature, params, ctx.block());
+            memory.createBlueprint(blueprintName, signature, blueprint);
+        }
+        return null;
+    }
+
+    @Override
+    public Value visitBlueprintCallStatement(ArchiCodeParser.BlueprintCallStatementContext ctx) {
+        var BlueprintName = ctx.getChild(0).getText();
+        String signature = generateSignature(ctx);
+        Memory localMemory = new Memory(memory);
+        localMemory.newScope();
+        Blueprint blueprint = memory.resolveBlueprint(BlueprintName, signature);
+        var params = blueprint.getParams();
+        if(!blueprint.isVoid()){
+            var returnName = blueprint.getReturnName();
+            var returnValue = blueprint.getReturnValue();
+            var returnType = returnValue.type;
+            localMemory.createVariable(returnName, returnType, returnValue);
+        }
+        for(int i = 0; i < blueprint.getParams().size(); i++){
+            String paramName = params.keySet().toArray(new String[0])[i];
+            Value paramValue = visit(ctx.expr(i));
+            Type actParamType = paramValue.type;
+            Type expectedParamType = Type.fromString(params.get(paramName));
+            if(actParamType != expectedParamType){
+                throw new RuntimeException("Wrong parameter type: " + BlueprintName + " " + paramName + " " + actParamType + " " + expectedParamType);
+            }
+            localMemory.createVariable(paramName, actParamType, paramValue);
+        }
+        ArchiCodeVisitorImpl localVisitor = new ArchiCodeVisitorImpl(filePath);
+        localVisitor.memory = localMemory;
+        localVisitor.visit(blueprint.getBlock());
+        if(!blueprint.isVoid()){
+            return localMemory.resolveVariable(blueprint.getReturnName());
+        }
+        return null;
+    }
+
+    @Override
+    public Value visitFuncCallExpr(ArchiCodeParser.FuncCallExprContext ctx) {
+
+        var BlueprintName = ctx.getChild(0).getText();
+        String signature = generateSignature(ctx);
+        Memory localMemory = new Memory(memory);
+        localMemory.newScope();
+        Blueprint blueprint = memory.resolveBlueprint(BlueprintName, signature);
+        var params = blueprint.getParams();
+        if(!blueprint.isVoid()){
+            var returnName = blueprint.getReturnName();
+            var returnValue = blueprint.getReturnValue();
+            var returnType = returnValue.type;
+            localMemory.createVariable(returnName, returnType, returnValue);
+        }
+        for(int i = 0; i < blueprint.getParams().size(); i++){
+            String paramName = params.keySet().toArray(new String[0])[i];
+            Value paramValue = visit(ctx.expr(i));
+            Type actParamType = paramValue.type;
+            Type expectedParamType = Type.fromString(params.get(paramName));
+            if(actParamType != expectedParamType){
+                throw new RuntimeException("Wrong parameter type: " + BlueprintName + " " + paramName + " " + actParamType + " " + expectedParamType);
+            }
+            localMemory.createVariable(paramName, actParamType, paramValue);
+        }
+        ArchiCodeVisitorImpl localVisitor = new ArchiCodeVisitorImpl(filePath);
+        localVisitor.memory = localMemory;
+        localVisitor.visit(blueprint.getBlock());
+        if(!blueprint.isVoid()){
+            return localMemory.resolveVariable(blueprint.getReturnName());
+        }
+        return null;
+    }
+
+    @Override
     public Value visitStepExpr(ArchiCodeParser.StepExprContext ctx) {
         if(ctx.INT() == null){
             return memory.resolveVariable("step", 1);
         }
         return memory.resolveVariable("step", Integer.parseInt(ctx.INT().getText()) + 1);
+    }
+
+    private String generateSignature(ArchiCodeParser.BlueprintCallStatementContext ctx) {
+        StringBuilder signature = new StringBuilder();
+        for(var expr : ctx.expr()){
+            Value value = visit(expr);
+            String type = value.type.toString();
+            if(!signature.isEmpty()) signature.append(",");
+            signature.append(type);
+        }
+        return signature.toString();
+    }
+
+    private String generateSignature(ArchiCodeParser.FuncCallExprContext ctx) {
+        StringBuilder signature = new StringBuilder();
+        for(var expr : ctx.expr()){
+            Value value = visit(expr);
+            String type = value.type.toString();
+            if(!signature.isEmpty()) signature.append(",");
+            signature.append(type);
+        }
+        return signature.toString();
     }
 }

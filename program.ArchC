@@ -1,14 +1,14 @@
-define x = 10
+define x = 3
+
+blueprint Test(int a) delivers int return = 1{
+    show "jeden argument"
+}
+
+blueprint Test(int a, int b) delivers int return = 2{
+    show "dwa argumenty"
+}
 
 
 Core() delivers int coreResult{
-    define stop = false
-    show x < 5 and stop == true
-    repeat until x < 5 and stop == true{
-        x = x - 1
-        show x
-        check x < 0 then{
-            stop = true
-        }
-    }
+    show Test Test 2; 8
 }
