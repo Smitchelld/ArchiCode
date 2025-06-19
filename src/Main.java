@@ -1,15 +1,47 @@
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+
+
+import gen.ArchiCodeLexer;
+import gen.ArchiCodeParser;
+import gen.ArchiCodeVisitor;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
+
+import java.io.IOException;
+import java.nio.file.Path;
+
+
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+        String filePath = "./program.ArchC";
+        if(args.length == 1){
+            filePath = args[0];
+        }
+        
+        try{
+            CharStream input = CharStreams.fromFileName(filePath);
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
+            ArchiCodeLexer lexer = new ArchiCodeLexer(input);
+            CommonTokenStream tokens = new CommonTokenStream(lexer);
+            ArchiCodeParser parser = new ArchiCodeParser(tokens);
+
+            ParseTree tree = parser.program();
+            if(parser.getNumberOfSyntaxErrors() > 0){
+                System.out.println("Parse errors: " + parser.getNumberOfSyntaxErrors());
+                return;
+            }
+
+            ParseTreeWalker walker = new ParseTreeWalker();
+            ArchiCodeListenerImpl listener = new ArchiCodeListenerImpl();
+            walker.walk(listener, tree);
+
+            ArchiCodeVisitorImpl visitor = new ArchiCodeVisitorImpl(Path.of(filePath));
+            visitor.visit(tree);
+
+        } catch (Exception e){
+            e.printStackTrace();
         }
     }
 }

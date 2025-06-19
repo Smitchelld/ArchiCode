@@ -1,4 +1,5 @@
-package gen;// Generated from C:/Users/szyro/IdeaProjects/pz1/ArchiCode/ArchiCode.g4 by ANTLR 4.13.2
+// Generated from C:/Users/szyro/IdeaProjects/pz1/ArchiCode/ArchiCode.g4 by ANTLR 4.13.2
+package gen;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
 /**

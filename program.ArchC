@@ -1,0 +1,7 @@
+define x = 21
+define char y = 'f'
+
+Core() delivers int coreResult{
+    show 1 != false
+
+}
