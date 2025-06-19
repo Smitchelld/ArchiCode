@@ -1,5 +1,6 @@
 package memory;
 
+import com.sun.jdi.BooleanValue;
 import com.sun.jdi.IntegerValue;
 
 public class IntValue extends Value{
@@ -72,12 +73,38 @@ public class IntValue extends Value{
     @Override
     public Value eq(Value v) {
         if(v.type == Type.INT) {
-            return new BoolValue(getInt() == v.getInt());
+            return getInt() == v.getInt() ? TRUE : FALSE;
         }else if(v.type == Type.FLOAT){
-            return new BoolValue(getFloat() == v.getFloat());
+            return getFloat() == v.getFloat() ? TRUE : FALSE;
         }else if(v.type == Type.BOOL){
-            return new BoolValue(getBoolean() == v.getBoolean());
+            return getBoolean() == v.getBoolean() ? TRUE : FALSE;
         }
         return super.eq(v);
     }
+
+    @Override
+    public Value gt(Value v) {
+        if(v.type == Type.INT) {
+            return getInt() > v.getInt() ? TRUE : FALSE;
+        }else if(v.type == Type.FLOAT){
+            return getFloat() > v.getFloat() ? TRUE : FALSE;
+        }
+        return super.gt(v);
+    }
+
+    @Override
+    public Value lt(Value v) {
+        if(v.type == Type.INT) {
+            return getInt() < v.getInt() ? TRUE : FALSE;
+        }else if(v.type == Type.FLOAT){
+            return getFloat() < v.getFloat() ? TRUE : FALSE;
+        }
+        return super.lt(v);
+    }
+
+    @Override
+    public Value neg() {
+        return new IntValue(-getInt());
+    }
+
 }

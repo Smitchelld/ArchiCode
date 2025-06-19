@@ -114,11 +114,12 @@ public class ArchiCodeVisitorImpl extends ArchiCodeBaseVisitor<Value> {
         return new BoolValue(false);
     }
 
-
-
     @Override
     public Value visitVarExpr(ArchiCodeParser.VarExprContext ctx) {
         String varName = ctx.VarName().getText();
+        if(ctx.INT() != null) {
+            return memory.resolveVariable(varName, Integer.parseInt(ctx.INT().getText()));
+        }
         return memory.resolveVariable(varName);
     }
 
@@ -197,5 +198,122 @@ public class ArchiCodeVisitorImpl extends ArchiCodeBaseVisitor<Value> {
             };
         }
         return left;
+    }
+
+    @Override
+    public Value visitRelationalExpr(ArchiCodeParser.RelationalExprContext ctx) {
+        Value left = visit(ctx.addSubExpr(0));
+        for(int i = 1; i < ctx.addSubExpr().size(); i++){
+            Value right = visit(ctx.addSubExpr(i));
+            String operator = ctx.getChild(2*i-1).getText();
+
+            left = switch(operator){
+                case "<" -> left.lt(right);
+                case "<=" -> left.lte(right);
+                case ">" -> left.gt(right);
+                case ">=" -> left.gte(right);
+                default -> throw new IllegalStateException("Unexpected value: " + operator);
+            };
+        }
+        return left;
+    }
+
+    @Override
+    public Value visitUnaryExpr(ArchiCodeParser.UnaryExprContext ctx) {
+        if(ctx.getChildCount() == 2){
+            String operator = ctx.getChild(0).getText();
+            Value value = visit(ctx.unaryExpr());
+
+            return switch (operator){
+                case "-" -> value.neg();
+                case "+" -> value;
+                case "not" -> value.neg();
+                default -> throw new IllegalStateException("Unexpected value: " + operator);
+            };
+        }
+        else{
+            return visit(ctx.atom());
+        }
+    }
+
+    @Override
+    public Value visitParenExpr(ArchiCodeParser.ParenExprContext ctx) {
+        return visit(ctx.expr());
+    }
+
+    @Override
+    public Value visitRepeatFixed(ArchiCodeParser.RepeatFixedContext ctx) {
+        if(ctx.expr() == null){
+            throw new RuntimeException("repeat fixed without expr");
+        }
+        Value expr = new IntValue(0);
+        Value limit = visit(ctx.expr(0));
+
+        if(ctx.expr().size() == 2){
+            expr = visit(ctx.expr(0));
+            limit = visit(ctx.expr(1));
+        }
+
+        if(expr.type != Type.INT || limit.type != Type.INT){
+            throw new RuntimeException("repeat fixed with non int expr");
+        }
+        memory.createVariable("step",Type.INT, new IntValue(expr.getInt()));
+        while(memory.resolveVariable("step").getInt() < limit.getInt()){
+            visit(ctx.block());
+            memory.assignValue("step", memory.resolveVariable("step").add(new IntValue(1)));
+        }
+        return null;
+
+    }
+
+    @Override
+    public Value visitCheckStatement(ArchiCodeParser.CheckStatementContext ctx) {
+        Value conditionValue = visit(ctx.expr());
+        boolean condiction;
+        try{
+            condiction = conditionValue.getBoolean();
+        }catch(Exception e){
+            throw new RuntimeException("condition is not boolean");
+        }
+        if(condiction){
+            return visit(ctx.block(0));
+        }else if (ctx.getChildCount() >4){
+            if(ctx.checkStatement() != null){
+                return visit(ctx.checkStatement());
+            }else if (ctx.block(1) != null){
+                return visit(ctx.block(1));
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Value visitRepeatUntil(ArchiCodeParser.RepeatUntilContext ctx) {
+
+        boolean condition;
+        try{
+            condition = visit(ctx.expr()).getBoolean();
+        } catch (Exception e) {
+            throw new RuntimeException("condition is not boolean");
+        }
+        memory.createVariable("step", Type.INT, new IntValue(0));
+        while(!condition){
+            visit(ctx.block());
+            memory.assignValue("step", memory.resolveVariable("step").add(new IntValue(1)));
+            try{
+                condition = visit(ctx.expr()).getBoolean();
+            }catch(Exception e){
+                throw new RuntimeException("condition is not boolean");
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Value visitStepExpr(ArchiCodeParser.StepExprContext ctx) {
+        if(ctx.INT() == null){
+            return memory.resolveVariable("step", 1);
+        }
+        return memory.resolveVariable("step", Integer.parseInt(ctx.INT().getText()) + 1);
     }
 }
