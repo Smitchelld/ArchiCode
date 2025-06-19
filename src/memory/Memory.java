@@ -18,6 +18,13 @@ public class Memory {
         this.filePath = filePath;
         Variables.push(new HashMap<>());
     }
+    public Memory(Memory memory) {
+        this.filePath = memory.filePath;
+        this.Blueprints = new HashMap<>(memory.Blueprints);
+        this.Variables = new Stack<>();
+        HashMap<String, Value> sharedGlobalScope = memory.Variables.firstElement();
+        this.Variables.push(sharedGlobalScope);
+    }
 
     public void newScope() {
         Variables.push(new HashMap<>());
@@ -81,4 +88,30 @@ public class Memory {
         }
         var.value = value.value;
     }
+
+    public void createBlueprint(String name, String signature, Blueprint blueprint) {
+        if(Blueprints.containsKey(name) && Blueprints.get(name).containsKey(signature)){
+            throw new RuntimeException("Duplicate Blueprint name: " + name);
+        }
+        if(!Blueprints.containsKey(name)){
+            Blueprints.put(name, new HashMap<>());
+        }
+        Blueprints.get(name).put(signature, blueprint);
+    }
+
+    public Blueprint resolveBlueprint(String name, String signature) {
+        for(var outerEntry : Blueprints.keySet()) {
+            for(var innerEntry : Blueprints.get(outerEntry).keySet()) {
+                System.out.println(""+outerEntry + "-> " + innerEntry);
+            }
+        }
+        if(!Blueprints.containsKey(name)){
+            throw new RuntimeException("Blueprint not found: " + name);
+        }
+        if(!Blueprints.get(name).containsKey(signature)){
+            throw new RuntimeException("Blueprint not found: " + name + " -> " + signature);
+        }
+        return Blueprints.get(name).get(signature);
+    }
+
 }

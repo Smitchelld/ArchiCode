@@ -45,7 +45,7 @@ blueprintStatement
     ;
 
 blueprintCallStatement
-    : CapitalVarName expr+ ';'?
+    : CapitalVarName expr+ (';')?
     ;
 
 paramList
@@ -98,7 +98,7 @@ unaryExpr
     | atom
     ;
 atom
-    : CapitalVarName expr+ ';'?                     # funcCallExpr
+    : CapitalVarName expr* (';')?                     # funcCallExpr
     | INT                                           # intExpr
     | FLOAT                                         # floatExpr
     | STRING                                        # stringExpr
