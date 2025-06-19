@@ -1,6 +1,10 @@
 package memory;
 
 public class Value {
+
+    public static final Value TRUE = new BoolValue(true);
+    public static final Value FALSE = new BoolValue(false);
+
     public Object value;
     public Type type;
     public Value(Object value, Type type) {
@@ -8,52 +12,51 @@ public class Value {
         this.type = type;
     }
 
-    int getInt(){
+    public int getInt(){
         //TODO
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    int getFloat(){
+    public float getFloat(){
         //TODO
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    String getString(){
+    public String getString(){
+        return String.valueOf(value);
+    }
+
+    public char getChar(){
         //TODO
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    char getChar(){
+    public boolean getBoolean(){
         //TODO
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    boolean getBoolean(){
+    public Value mul(Value v){
         //TODO
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    Value mul(Value v){
+    public Value div(Value v){
         //TODO
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    Value div(Value v){
+    public Value add(Value v){
         //TODO
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    Value add(Value v){
+    public Value sub(Value v){
         //TODO
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    Value sub(Value v){
-        //TODO
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    Value eq(Value v){
+    public Value eq(Value v){
         //TODO
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -83,9 +86,8 @@ public class Value {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    Value neq(Value v){
-        //TODO
-        throw new UnsupportedOperationException("Not supported yet.");
+    public Value neq(Value v){
+        return eq(v).equals(FALSE) ? TRUE : FALSE;
     }
 
     Value neg(Value v){
@@ -93,6 +95,23 @@ public class Value {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    public Value and(Value v){
+        //TODO
+        try{
+            return new BoolValue(getBoolean() && v.getBoolean());
+        }catch (Exception e){
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+    }
+
+    public Value or(Value v){
+        //TODO
+        try{
+            return new BoolValue(getBoolean() || v.getBoolean());
+        }catch (Exception e){
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+    }
 
 
 
