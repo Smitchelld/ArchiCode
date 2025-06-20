@@ -1,14 +1,21 @@
 define x = 3
 
-blueprint Test(int a) delivers int return = 1{
-    show "jeden argument"
+blueprint Silnia(int a) delivers int return = 1{
+    check a > 1 then{
+        return = a * Silnia a-1
+        show return
+    }
 }
 
-blueprint Test(int a, int b) delivers int return = 2{
-    show "dwa argumenty"
+blueprint EditGlobal(){
+    x = 2137
 }
+
+
 
 
 Core() delivers int coreResult{
-    show Test Test 2; 8
+    show x
+    EditGlobal 1 2 3
+    show x
 }

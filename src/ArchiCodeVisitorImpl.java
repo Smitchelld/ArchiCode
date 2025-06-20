@@ -1,6 +1,7 @@
 import gen.ArchiCodeBaseVisitor;
 import gen.ArchiCodeParser;
 import memory.*;
+import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -25,35 +26,43 @@ public class ArchiCodeVisitorImpl extends ArchiCodeBaseVisitor<Value> {
     }
 
     @Override
-    public Value visitProgram(ArchiCodeParser.ProgramContext ctx) {
-        boolean coreExecuted = false;
-
-        for (ArchiCodeParser.StatementContext stmt : ctx.statement()) {
-            if(stmt.coreStatement() != null) {
-                if(coreExecuted) {
-                    throw new RuntimeException("Drugi core");
+    public Value visitProgram(ArchiCodeParser.ProgramContext ctx){
+        try {
+            boolean coreExecuted = false;
+            for (ArchiCodeParser.StatementContext stmt : ctx.statement()) {
+                if (stmt.coreStatement() != null) {
+                    if (coreExecuted) {
+                        throw new RuntimeException("Drugi core");
+                    }
+                    coreExecuted = true;
+                    visit(stmt);
+                } else if (stmt.blueprintStatement() != null) {
+                    if (coreExecuted) {
+                        throw new RuntimeException("blueprint Pod Core");
+                    }
+                    visit(stmt);
+                } else if (stmt.defineStatement() != null) {
+                    if (coreExecuted) {
+                        throw new RuntimeException("define statement pod core");
+                    }
+                    visit(stmt);
+                } else {
+                    throw new RuntimeException("nieprawidlowa instrukcja " + stmt.getText());
                 }
-                coreExecuted = true;
-                visit(stmt);
-            } else if (stmt.blueprintStatement() != null) {
-                if(coreExecuted) {
-                    throw new RuntimeException("blueprint Pod Core");
-                }
-                visit(stmt);
-            } else if (stmt.defineStatement() != null) {
-                if(coreExecuted) {
-                    throw new RuntimeException("define statement pod core");
-                }
-                visit(stmt);
-            }else{
-                throw new RuntimeException("nieprawidlowa instrukcja "+ stmt.getText());
             }
-        }
 
-        if(!coreExecuted) {
-            throw new RuntimeException("Bark Core");
-        }
+            if (!coreExecuted) {
+                throw new RuntimeException("Bark Core");
+            }
 
+            return null;
+        }catch(Exception e){
+            var line = ctx.getStart().getLine();
+            var column = ctx.getStart().getCharPositionInLine();
+            var message = e.getMessage();
+            System.err.println("Error at line " + line + " column " + column + ": " + message);
+            System.exit(1);
+        }
         return null;
     }
 
@@ -410,6 +419,7 @@ public class ArchiCodeVisitorImpl extends ArchiCodeBaseVisitor<Value> {
         return memory.resolveVariable("step", Integer.parseInt(ctx.INT().getText()) + 1);
     }
 
+
     private String generateSignature(ArchiCodeParser.BlueprintCallStatementContext ctx) {
         StringBuilder signature = new StringBuilder();
         for(var expr : ctx.expr()){
@@ -431,4 +441,6 @@ public class ArchiCodeVisitorImpl extends ArchiCodeBaseVisitor<Value> {
         }
         return signature.toString();
     }
+
+
 }

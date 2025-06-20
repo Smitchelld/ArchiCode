@@ -45,7 +45,7 @@ blueprintStatement
     ;
 
 blueprintCallStatement
-    : CapitalVarName expr+ (';')?
+    : CapitalVarName expr* (';')?
     ;
 
 paramList
