@@ -21,7 +21,7 @@ coreStatement
 
 
 showStatement
-    : 'show' expr
+    : 'show' expr+
     ;
 
 defineStatement

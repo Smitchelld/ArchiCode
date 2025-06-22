@@ -8,6 +8,7 @@ import java.io.PrintStream;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 public class ArchiCodeVisitorImpl extends ArchiCodeBaseVisitor<Value> {
 
@@ -60,7 +61,19 @@ public class ArchiCodeVisitorImpl extends ArchiCodeBaseVisitor<Value> {
             var line = ctx.getStart().getLine();
             var column = ctx.getStart().getCharPositionInLine();
             var message = e.getMessage();
-            System.err.println("Error at line " + line + " column " + column + ": " + message);
+            var functionStack = Memory.FunctionCallStack;
+            System.err.println("Error at");
+            int i;
+            for(i = 0; i < functionStack.size(); i++){
+                for(int j = 0; j < i; j++){
+                    System.err.print(" ");
+                }
+                System.err.println(">"+functionStack.get(i));
+            }
+            for(;i > 0 ; i--){
+                System.err.print(" ");
+            }
+            System.err.println(message);
             System.exit(1);
         }
         return null;
@@ -68,212 +81,402 @@ public class ArchiCodeVisitorImpl extends ArchiCodeBaseVisitor<Value> {
 
     @Override
     public Value visitDefineStatement(ArchiCodeParser.DefineStatementContext ctx) {
-        String name = ctx.VarName().getText();
-        Value value = visit(ctx.expr());
-        Type type;
-        if(ctx.type() != null) {
-            type = Type.fromString(ctx.type().getText());
+        try {
+            String name = ctx.VarName().getText();
+            Value value = visit(ctx.expr());
+            Type type;
+            if (ctx.type() != null) {
+                type = Type.fromString(ctx.type().getText());
+            } else {
+                type = Type.inferType(value);
+            }
+            memory.createVariable(name, type, value);
+        }catch(ArchiCodeException e){
+            throwArchiCodeException(e);
+        }catch(Exception e){
+            throwError(e.getMessage(), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
         }
-        else{
-            type = Type.inferType(value);
-        }
-        memory.createVariable(name, type, value);
         return null;
     }
 
     @Override
     public Value visitShowStatement(ArchiCodeParser.ShowStatementContext ctx) {
-        Value value = visit(ctx.expr());
-        System.out.println(value != null ? value.getString() : "null");
+        try {
+            StringBuilder message = new StringBuilder();
+            if (ctx.expr() == null) {
+                return null;
+            }
+            for(var expt : ctx.expr()){
+                Value value = visit(expt);
+                message.append(value.getString());
+                message.append(", ");
+            }
+            message.deleteCharAt(message.length()-1);
+            message.deleteCharAt(message.length()-1);
+            String strMessage = message.toString().replace("\\n", "\n")
+                    .replace("\\t", "\t")
+                    .replace("\\\"", "\"")
+                    .replace("\\\\", "\\");
+            System.out.println(strMessage);
+        }catch(ArchiCodeException e){
+            throwArchiCodeException(e);
+        }catch(Exception e){
+            throwError(e.getMessage(), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
+        }
         return null;
     }
 
     @Override
     public Value visitAssignStatement(ArchiCodeParser.AssignStatementContext ctx) {
-        var VarName = ctx.VarName().getText();
-        Value value = visit(ctx.expr());
-        memory.assignValue(VarName, value);
-        return memory.resolveVariable(VarName);
+        try {
+            var VarName = ctx.VarName().getText();
+            Value value = visit(ctx.expr());
+            memory.assignValue(VarName, value);
+            return memory.resolveVariable(VarName);
+        } catch (ArchiCodeException e) {
+            throwArchiCodeException(e);
+        } catch (Exception e) {
+            throwError(e.getMessage(), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
+            return null;
+        }
+        return null;
+    }
+
+    @Override
+    public Value visitRequestStatement(ArchiCodeParser.RequestStatementContext ctx) {
+        try {
+            String varName = ctx.VarName().getText();
+            Value value = memory.resolveVariable(varName);
+            System.out.print("Podaj wartość dla " + varName + ": ");
+            Scanner scanner = new Scanner(System.in);
+            String input = scanner.nextLine();
+            Type varType = value.type;
+            Value parsed = null;
+            try {
+                parsed = switch (varType) {
+                    case INT -> new IntValue(Integer.parseInt(input));
+                    case FLOAT -> new FloatValue(Float.parseFloat(input));
+                    case BOOL -> new BoolValue(Boolean.parseBoolean(input));
+                    case CHAR -> {
+                        yield new CharValue(input.charAt(0));
+                    }
+                    case STRING -> new StringValue(input);
+                    default ->
+                            throw new IllegalArgumentException("Nierozpoznany typ zmiennej " + varName + " typu " + varType);
+                };
+            } catch (Exception e) {
+                var line = ctx.getStart().getLine();
+                var column = ctx.getStart().getCharPositionInLine();
+                var message = e.getMessage();
+                System.err.println("Error at line " + line + " column " + column + ": " + message);
+                System.exit(1);
+            }
+
+            memory.assignValue(varName, parsed);
+        }catch(ArchiCodeException e){
+            throwArchiCodeException(e);
+        }catch(Exception e){
+            throwError(e.getMessage(), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
+        }
+        return null;
     }
 
     @Override
     public Value visitIntExpr(ArchiCodeParser.IntExprContext ctx) {
-        return new IntValue(Integer.parseInt(ctx.INT().getText()));
+        try {
+            return new IntValue(Integer.parseInt(ctx.INT().getText()));
+        }catch(ArchiCodeException e){
+            throwArchiCodeException(e);
+        }catch(Exception e){
+            throwError(e.getMessage(), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
+        }
+        return null;
     }
 
     @Override
     public Value visitFloatExpr(ArchiCodeParser.FloatExprContext ctx) {
-        return new FloatValue(Float.parseFloat(ctx.FLOAT().getText()));
+        try {
+            return new FloatValue(Float.parseFloat(ctx.FLOAT().getText()));
+        }catch(ArchiCodeException e){
+            throwArchiCodeException(e);
+        }catch(Exception e){
+            throwError(e.getMessage(), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
+        }
+        return null;
     }
 
     @Override
     public Value visitStringExpr(ArchiCodeParser.StringExprContext ctx) {
-        return new StringValue(ctx.STRING().getText());
+        try {
+            return new StringValue(ctx.STRING().getText());
+        }catch(ArchiCodeException e){
+            throwArchiCodeException(e);
+        }catch(Exception e){
+            throwError(e.getMessage(), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
+        }
+        return null;
     }
 
     @Override
     public Value visitCharExpr(ArchiCodeParser.CharExprContext ctx) {
-        return new CharValue(ctx.CHAR().getText().charAt(1));
+        try {
+            return new CharValue(ctx.CHAR().getText().charAt(1));
+        }catch(ArchiCodeException e){
+            throwArchiCodeException(e);
+        }catch(Exception e){
+            throwError(e.getMessage(), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
+        }
+        return null;
     }
 
     @Override
     public Value visitBoolTrueExpr(ArchiCodeParser.BoolTrueExprContext ctx) {
-        return new BoolValue(true);
+        try {
+            return new BoolValue(true);
+        }catch(ArchiCodeException e){
+            throwArchiCodeException(e);
+        }catch(Exception e){
+            throwError(e.getMessage(), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
+        }
+        return null;
     }
 
     @Override
     public Value visitBoolFalseExpr(ArchiCodeParser.BoolFalseExprContext ctx) {
-        return new BoolValue(false);
+        try {
+            return new BoolValue(false);
+        }catch(ArchiCodeException e){
+            throwArchiCodeException(e);
+        }catch(Exception e){
+            throwError(e.getMessage(), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
+        }
+        return null;
     }
 
     @Override
     public Value visitVarExpr(ArchiCodeParser.VarExprContext ctx) {
-        String varName = ctx.VarName().getText();
-        if(ctx.INT() != null) {
-            return memory.resolveVariable(varName, Integer.parseInt(ctx.INT().getText()));
+        try {
+            String varName = ctx.VarName().getText();
+            if (ctx.INT() != null) {
+                return memory.resolveVariable(varName, Integer.parseInt(ctx.INT().getText()));
+            }
+            return memory.resolveVariable(varName);
+        }catch(ArchiCodeException e){
+            throwArchiCodeException(e);
+        }catch(Exception e){
+            throwError(e.getMessage(), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
         }
-        return memory.resolveVariable(varName);
+        return null;
     }
 
     @Override
     public Value visitBlock(ArchiCodeParser.BlockContext ctx) {
-        if(suppressBlockScope) return null;
-        memory.newScope();
-        visitChildren(ctx);
-        memory.endScope();
+        try {
+            if (suppressBlockScope) return null;
+            memory.newScope();
+            visitChildren(ctx);
+            memory.endScope();
+            return null;
+        }catch(ArchiCodeException e){
+            throwArchiCodeException(e);
+        }catch(Exception e){
+            throwError(e.getMessage(), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
+        }
         return null;
     }
 
     @Override
     public Value visitAddSubExpr(ArchiCodeParser.AddSubExprContext ctx) {
-        Value left = visit(ctx.mulDivExpr(0));
-        for(int i = 1; i < ctx.mulDivExpr().size(); i++) {
-            Value right = visit(ctx.mulDivExpr(i));
-            String operator = ctx.getChild(2*i-1).getText();
+        try {
+            Value left = visit(ctx.mulDivExpr(0));
+            for (int i = 1; i < ctx.mulDivExpr().size(); i++) {
+                Value right = visit(ctx.mulDivExpr(i));
+                String operator = ctx.getChild(2 * i - 1).getText();
 
-            left = switch(operator) {
-                case "+" -> left.add(right);
-                case "-" -> left.sub(right);
-                default -> throw new RuntimeException("unsupported operator " + operator);
-            };
+                left = switch (operator) {
+                    case "+" -> left.add(right);
+                    case "-" -> left.sub(right);
+                    default -> throw new RuntimeException("unsupported operator " + operator);
+                };
+            }
+            return left;
+        }catch(ArchiCodeException e){
+            throwArchiCodeException(e);
+        }catch(Exception e){
+            throwError(e.getMessage(), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
         }
-        return left;
+        return null;
     }
 
     @Override
     public Value visitMulDivExpr(ArchiCodeParser.MulDivExprContext ctx) {
-        Value left = visit(ctx.unaryExpr(0));
+        try {
+            Value left = visit(ctx.unaryExpr(0));
 
-        for(int i = 1; i < ctx.unaryExpr().size(); i++) {
-            Value right = visit(ctx.unaryExpr(i));
-            String operator = ctx.getChild(2*i-1).getText();
+            for (int i = 1; i < ctx.unaryExpr().size(); i++) {
+                Value right = visit(ctx.unaryExpr(i));
+                String operator = ctx.getChild(2 * i - 1).getText();
 
-            left = switch (operator){
-                case "*" -> left.mul(right);
-                case "/" -> left.div(right);
-                default -> throw new RuntimeException("unsupported operator " + operator);
-            };
+                left = switch (operator) {
+                    case "*" -> left.mul(right);
+                    case "/" -> left.div(right);
+                    default -> throw new RuntimeException("unsupported operator " + operator);
+                };
+            }
+            return left;
+        }catch(ArchiCodeException e){
+            throwArchiCodeException(e);
+        }catch(Exception e){
+            throwError(e.getMessage(), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
         }
-        return left;
+        return null;
     }
 
     @Override
     public Value visitAndExpr(ArchiCodeParser.AndExprContext ctx) {
-        Value left = visit(ctx.equalityExpr(0));
-        for(int i = 1; i < ctx.equalityExpr().size(); i++) {
-            Value right = visit(ctx.equalityExpr(i));
-            left = left.and(right);
+        try {
+            Value left = visit(ctx.equalityExpr(0));
+            for (int i = 1; i < ctx.equalityExpr().size(); i++) {
+                Value right = visit(ctx.equalityExpr(i));
+                left = left.and(right);
+            }
+            return left;
+        }catch(ArchiCodeException e){
+            throwArchiCodeException(e);
+        }catch(Exception e){
+            throwError(e.getMessage(), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
         }
-        return left;
+        return null;
     }
 
     @Override
     public Value visitOrExpr(ArchiCodeParser.OrExprContext ctx) {
-        Value left = visit(ctx.andExpr(0));
-        for(int i = 1; i < ctx.andExpr().size(); i++) {
-            Value right = visit(ctx.andExpr(i));
-            left = left.or(right);
+        try {
+            Value left = visit(ctx.andExpr(0));
+            for (int i = 1; i < ctx.andExpr().size(); i++) {
+                Value right = visit(ctx.andExpr(i));
+                left = left.or(right);
+            }
+            return left;
+        }catch(ArchiCodeException e){
+            throwArchiCodeException(e);
+        }catch(Exception e){
+            throwError(e.getMessage(), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
         }
-        return left;
+        return null;
     }
 
     @Override
     public Value visitEqualityExpr(ArchiCodeParser.EqualityExprContext ctx) {
-        Value left = visit(ctx.relationalExpr(0));
-        for(int i = 1; i < ctx.relationalExpr().size(); i++){
-            Value right = visit(ctx.relationalExpr(i));
-            String operator = ctx.getChild(2*i-1).getText();
-            
-            left = switch (operator){
-                case "==" -> left.eq(right);
-                case "!=" -> left.neq(right);
-                default -> throw new IllegalStateException("Unexpected value: " + operator);
-            };
+        try {
+            Value left = visit(ctx.relationalExpr(0));
+            for (int i = 1; i < ctx.relationalExpr().size(); i++) {
+                Value right = visit(ctx.relationalExpr(i));
+                String operator = ctx.getChild(2 * i - 1).getText();
+
+                left = switch (operator) {
+                    case "==" -> left.eq(right);
+                    case "!=" -> left.neq(right);
+                    default -> throw new IllegalStateException("Unexpected value: " + operator);
+                };
+            }
+            return left;
+        }catch(ArchiCodeException e){
+            throwArchiCodeException(e);
+        }catch(Exception e){
+            throwError(e.getMessage(), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
         }
-        return left;
+        return null;
     }
 
     @Override
     public Value visitRelationalExpr(ArchiCodeParser.RelationalExprContext ctx) {
-        Value left = visit(ctx.addSubExpr(0));
-        for(int i = 1; i < ctx.addSubExpr().size(); i++){
-            Value right = visit(ctx.addSubExpr(i));
-            String operator = ctx.getChild(2*i-1).getText();
+        try {
+            Value left = visit(ctx.addSubExpr(0));
+            for (int i = 1; i < ctx.addSubExpr().size(); i++) {
+                Value right = visit(ctx.addSubExpr(i));
+                String operator = ctx.getChild(2 * i - 1).getText();
 
-            left = switch(operator){
-                case "<" -> left.lt(right);
-                case "<=" -> left.lte(right);
-                case ">" -> left.gt(right);
-                case ">=" -> left.gte(right);
-                default -> throw new IllegalStateException("Unexpected value: " + operator);
-            };
+                left = switch (operator) {
+                    case "<" -> left.lt(right);
+                    case "<=" -> left.lte(right);
+                    case ">" -> left.gt(right);
+                    case ">=" -> left.gte(right);
+                    default -> throw new IllegalStateException("Unexpected value: " + operator);
+                };
+            }
+            return left;
+        }catch(ArchiCodeException e){
+            throwArchiCodeException(e);
+        }catch(Exception e){
+            throwError(e.getMessage(), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
         }
-        return left;
+        return null;
     }
 
     @Override
     public Value visitUnaryExpr(ArchiCodeParser.UnaryExprContext ctx) {
-        if(ctx.getChildCount() == 2){
-            String operator = ctx.getChild(0).getText();
-            Value value = visit(ctx.unaryExpr());
+        try {
+            if (ctx.getChildCount() == 2) {
+                String operator = ctx.getChild(0).getText();
+                Value value = visit(ctx.unaryExpr());
 
-            return switch (operator){
-                case "-" -> value.neg();
-                case "+" -> value;
-                case "not" -> value.neg();
-                default -> throw new IllegalStateException("Unexpected value: " + operator);
-            };
+                return switch (operator) {
+                    case "-" -> value.neg();
+                    case "+" -> value;
+                    case "not" -> value.neg();
+                    default -> throw new IllegalStateException("Unexpected value: " + operator);
+                };
+            } else {
+                return visit(ctx.atom());
+            }
+        }catch(ArchiCodeException e){
+            throwArchiCodeException(e);
+        }catch(Exception e){
+            throwError(e.getMessage(), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
         }
-        else{
-            return visit(ctx.atom());
-        }
+        return null;
     }
 
     @Override
     public Value visitParenExpr(ArchiCodeParser.ParenExprContext ctx) {
-        return visit(ctx.expr());
+        try {
+            return visit(ctx.expr());
+        }catch(ArchiCodeException e){
+            throwArchiCodeException(e);
+        }catch(Exception e){
+            throwError(e.getMessage(), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
+        }
+        return null;
     }
 
     @Override
     public Value visitRepeatFixed(ArchiCodeParser.RepeatFixedContext ctx) {
-        if(ctx.expr() == null){
-            throw new RuntimeException("repeat fixed without expr");
-        }
-        Value expr = new IntValue(0);
-        Value limit = visit(ctx.expr(0));
+        try {
+            if (ctx.expr() == null) {
+                throw new RuntimeException("repeat fixed without expr");
+            }
+            Value expr = new IntValue(0);
+            Value limit = visit(ctx.expr(0));
 
-        if(ctx.expr().size() == 2){
-            expr = visit(ctx.expr(0));
-            limit = visit(ctx.expr(1));
-        }
+            if (ctx.expr().size() == 2) {
+                expr = visit(ctx.expr(0));
+                limit = visit(ctx.expr(1));
+            }
 
-        if(expr.type != Type.INT || limit.type != Type.INT){
-            throw new RuntimeException("repeat fixed with non int expr");
-        }
-        memory.createVariable("step",Type.INT, new IntValue(expr.getInt()));
-        while(memory.resolveVariable("step").getInt() < limit.getInt()){
-            visit(ctx.block());
-            memory.assignValue("step", memory.resolveVariable("step").add(new IntValue(1)));
+            if (expr.type != Type.INT || limit.type != Type.INT) {
+                throw new RuntimeException("repeat fixed with non int expr");
+            }
+            memory.createVariable("step", Type.INT, new IntValue(expr.getInt()));
+            while (memory.resolveVariable("step").getInt() < limit.getInt()) {
+                visit(ctx.block());
+                memory.assignValue("step", memory.resolveVariable("step").add(new IntValue(1)));
+            }
+            return null;
+        }catch(ArchiCodeException e){
+            throwArchiCodeException(e);
+        }catch(Exception e){
+            throwError(e.getMessage(), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
         }
         return null;
 
@@ -281,142 +484,196 @@ public class ArchiCodeVisitorImpl extends ArchiCodeBaseVisitor<Value> {
 
     @Override
     public Value visitCheckStatement(ArchiCodeParser.CheckStatementContext ctx) {
-        Value conditionValue = visit(ctx.expr());
-        boolean condiction;
-        try{
-            condiction = conditionValue.getBoolean();
-        }catch(Exception e){
-            throw new RuntimeException("condition is not boolean");
-        }
-        if(condiction){
-            return visit(ctx.block(0));
-        }else if (ctx.getChildCount() >4){
-            if(ctx.checkStatement() != null){
-                return visit(ctx.checkStatement());
-            }else if (ctx.block(1) != null){
-                return visit(ctx.block(1));
+        try {
+            Value conditionValue = visit(ctx.expr());
+            boolean condiction = false;
+            try {
+                condiction = conditionValue.getBoolean();
+            } catch (Exception e) {
+                var line = ctx.getStart().getLine();
+                var column = ctx.getStart().getCharPositionInLine();
+                var message = e.getMessage();
+                System.err.println("Error at line " + line + " column " + column + ": " + message);
+                System.exit(1);
             }
+            if (condiction) {
+                return visit(ctx.block(0));
+            } else if (ctx.getChildCount() > 4) {
+                if (ctx.checkStatement() != null) {
+                    return visit(ctx.checkStatement());
+                } else if (ctx.block(1) != null) {
+                    return visit(ctx.block(1));
+                }
+            }
+            return null;
+        }catch(ArchiCodeException e){
+            throwArchiCodeException(e);
+        }catch(Exception e){
+            throwError(e.getMessage(), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
         }
         return null;
     }
 
     @Override
     public Value visitRepeatUntil(ArchiCodeParser.RepeatUntilContext ctx) {
-
-        boolean condition;
-        try{
-            condition = visit(ctx.expr()).getBoolean();
-        } catch (Exception e) {
-            throw new RuntimeException("condition is not boolean");
-        }
-        memory.createVariable("step", Type.INT, new IntValue(0));
-        while(!condition){
-            visit(ctx.block());
-            memory.assignValue("step", memory.resolveVariable("step").add(new IntValue(1)));
-            try{
+        try {
+            boolean condition = false;
+            try {
                 condition = visit(ctx.expr()).getBoolean();
-            }catch(Exception e){
-                throw new RuntimeException("condition is not boolean");
+            } catch (Exception e) {
+                var line = ctx.getStart().getLine();
+                var column = ctx.getStart().getCharPositionInLine();
+                var message = e.getMessage();
+                System.err.println("Error at line " + line + " column " + column + ": " + message);
+                System.exit(1);
             }
+            memory.createVariable("step", Type.INT, new IntValue(0));
+            while (!condition) {
+                visit(ctx.block());
+                memory.assignValue("step", memory.resolveVariable("step").add(new IntValue(1)));
+                try {
+                    condition = visit(ctx.expr()).getBoolean();
+                } catch (Exception e) {
+                    throw new RuntimeException("condition is not boolean");
+                }
+            }
+            return null;
+        }catch(ArchiCodeException e){
+            throwArchiCodeException(e);
+        }catch(Exception e){
+            throwError(e.getMessage(), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
         }
         return null;
     }
 
     @Override
     public Value visitBlueprintStatement(ArchiCodeParser.BlueprintStatementContext ctx) {
-        String blueprintName = ctx.CapitalVarName().toString();
-        String signature = Blueprint.generateSignature(ctx.paramList());
-        Map<String, String> params = new HashMap<>();
-        if(ctx.paramList() != null){
-            for(var param : ctx.paramList().param()){
-                params.put(param.VarName().getText(), param.type().getText());
+        try {
+            String blueprintName = ctx.CapitalVarName().toString();
+            String signature = Blueprint.generateSignature(ctx.paramList());
+            Map<String, String> params = new HashMap<>();
+            if (ctx.paramList() != null) {
+                for (var param : ctx.paramList().param()) {
+                    params.put(param.VarName().getText(), param.type().getText());
+                }
             }
-        }
-        if(ctx.type() != null && ctx.VarName() != null){
-            var returnName = ctx.VarName().getText();
-            var returnValue = visit(ctx.expr());
-            Blueprint blueprint = new Blueprint(blueprintName, signature, params, ctx.block(), returnName, returnValue);
-            memory.createBlueprint(blueprintName, signature, blueprint);
-        }else{
-            Blueprint blueprint = new Blueprint(blueprintName, signature, params, ctx.block());
-            memory.createBlueprint(blueprintName, signature, blueprint);
+            if (ctx.type() != null && ctx.VarName() != null) {
+                var returnName = ctx.VarName().getText();
+                var returnValue = visit(ctx.expr());
+                Blueprint blueprint = new Blueprint(blueprintName, signature, params, ctx.block(), returnName, returnValue);
+                memory.createBlueprint(blueprintName, signature, blueprint);
+            } else {
+                Blueprint blueprint = new Blueprint(blueprintName, signature, params, ctx.block());
+                memory.createBlueprint(blueprintName, signature, blueprint);
+            }
+            return null;
+        }catch(ArchiCodeException e){
+            throwArchiCodeException(e);
+        }catch(Exception e){
+            throwError(e.getMessage(), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
         }
         return null;
     }
 
     @Override
     public Value visitBlueprintCallStatement(ArchiCodeParser.BlueprintCallStatementContext ctx) {
-        var BlueprintName = ctx.getChild(0).getText();
-        String signature = generateSignature(ctx);
-        Memory localMemory = new Memory(memory);
-        localMemory.newScope();
-        Blueprint blueprint = memory.resolveBlueprint(BlueprintName, signature);
-        var params = blueprint.getParams();
-        if(!blueprint.isVoid()){
-            var returnName = blueprint.getReturnName();
-            var returnValue = blueprint.getReturnValue();
-            var returnType = returnValue.type;
-            localMemory.createVariable(returnName, returnType, returnValue);
-        }
-        for(int i = 0; i < blueprint.getParams().size(); i++){
-            String paramName = params.keySet().toArray(new String[0])[i];
-            Value paramValue = visit(ctx.expr(i));
-            Type actParamType = paramValue.type;
-            Type expectedParamType = Type.fromString(params.get(paramName));
-            if(actParamType != expectedParamType){
-                throw new RuntimeException("Wrong parameter type: " + BlueprintName + " " + paramName + " " + actParamType + " " + expectedParamType);
+        try {
+            Memory.countRecursion();
+            var BlueprintName = ctx.getChild(0).getText();
+            Memory.addCallStack("line " + ctx.getStart().getLine() + " column " + ctx.getStart().getCharPositionInLine() + " " + BlueprintName + ":");
+            String signature = generateSignature(ctx);
+            Memory localMemory = new Memory(memory);
+            localMemory.newScope();
+            Blueprint blueprint = memory.resolveBlueprint(BlueprintName, signature);
+            var params = blueprint.getParams();
+            if (!blueprint.isVoid()) {
+                var returnName = blueprint.getReturnName();
+                var returnValue = blueprint.getReturnValue();
+                var returnType = returnValue.type;
+                localMemory.createVariable(returnName, returnType, returnValue);
             }
-            localMemory.createVariable(paramName, actParamType, paramValue);
-        }
-        ArchiCodeVisitorImpl localVisitor = new ArchiCodeVisitorImpl(filePath);
-        localVisitor.memory = localMemory;
-        localVisitor.visit(blueprint.getBlock());
-        if(!blueprint.isVoid()){
-            return localMemory.resolveVariable(blueprint.getReturnName());
+            for (int i = 0; i < blueprint.getParams().size(); i++) {
+                String paramName = params.keySet().toArray(new String[0])[i];
+                Value paramValue = visit(ctx.expr(i));
+                Type actParamType = paramValue.type;
+                Type expectedParamType = Type.fromString(params.get(paramName));
+                if (actParamType != expectedParamType) {
+                    throw new RuntimeException("Wrong parameter type: " + BlueprintName + " " + paramName + " got " + actParamType + " expected " + expectedParamType);
+                }
+                localMemory.createVariable(paramName, actParamType, paramValue);
+            }
+            ArchiCodeVisitorImpl localVisitor = new ArchiCodeVisitorImpl(filePath);
+            localVisitor.memory = localMemory;
+            localVisitor.visit(blueprint.getBlock());
+            Memory.decrementRecursion();
+            if (!blueprint.isVoid()) {
+                return localMemory.resolveVariable(blueprint.getReturnName());
+            }
+            return null;
+        }catch(ArchiCodeException e){
+            throwArchiCodeException(e);
+        }catch(Exception e){
+            throwError(e.getMessage(), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
         }
         return null;
     }
 
     @Override
     public Value visitFuncCallExpr(ArchiCodeParser.FuncCallExprContext ctx) {
-
-        var BlueprintName = ctx.getChild(0).getText();
-        String signature = generateSignature(ctx);
-        Memory localMemory = new Memory(memory);
-        localMemory.newScope();
-        Blueprint blueprint = memory.resolveBlueprint(BlueprintName, signature);
-        var params = blueprint.getParams();
-        if(!blueprint.isVoid()){
-            var returnName = blueprint.getReturnName();
-            var returnValue = blueprint.getReturnValue();
-            var returnType = returnValue.type;
-            localMemory.createVariable(returnName, returnType, returnValue);
-        }
-        for(int i = 0; i < blueprint.getParams().size(); i++){
-            String paramName = params.keySet().toArray(new String[0])[i];
-            Value paramValue = visit(ctx.expr(i));
-            Type actParamType = paramValue.type;
-            Type expectedParamType = Type.fromString(params.get(paramName));
-            if(actParamType != expectedParamType){
-                throw new RuntimeException("Wrong parameter type: " + BlueprintName + " " + paramName + " " + actParamType + " " + expectedParamType);
+        try {
+            Memory.countRecursion();
+            var BlueprintName = ctx.getChild(0).getText();
+            Memory.addCallStack("line " + ctx.getStart().getLine() + " column " + ctx.getStart().getCharPositionInLine() + " " + BlueprintName + ":");
+            String signature = generateSignature(ctx);
+            Memory localMemory = new Memory(memory);
+            localMemory.newScope();
+            Blueprint blueprint = memory.resolveBlueprint(BlueprintName, signature);
+            var params = blueprint.getParams();
+            if (!blueprint.isVoid()) {
+                var returnName = blueprint.getReturnName();
+                var returnValue = blueprint.getReturnValue();
+                var returnType = returnValue.type;
+                localMemory.createVariable(returnName, returnType, returnValue);
             }
-            localMemory.createVariable(paramName, actParamType, paramValue);
-        }
-        ArchiCodeVisitorImpl localVisitor = new ArchiCodeVisitorImpl(filePath);
-        localVisitor.memory = localMemory;
-        localVisitor.visit(blueprint.getBlock());
-        if(!blueprint.isVoid()){
-            return localMemory.resolveVariable(blueprint.getReturnName());
+            for (int i = 0; i < blueprint.getParams().size(); i++) {
+                String paramName = params.keySet().toArray(new String[0])[i];
+                Value paramValue = visit(ctx.expr(i));
+                Type actParamType = paramValue.type;
+                Type expectedParamType = Type.fromString(params.get(paramName));
+                if (actParamType != expectedParamType) {
+                    throw new RuntimeException("Wrong parameter type: " + BlueprintName + " " + paramName + " " + actParamType + " " + expectedParamType);
+                }
+                localMemory.createVariable(paramName, actParamType, paramValue);
+            }
+            ArchiCodeVisitorImpl localVisitor = new ArchiCodeVisitorImpl(filePath);
+            localVisitor.memory = localMemory;
+            localVisitor.visit(blueprint.getBlock());
+            Memory.decrementRecursion();
+            if (!blueprint.isVoid()) {
+                return localMemory.resolveVariable(blueprint.getReturnName());
+            }
+            return null;
+        }catch(ArchiCodeException e){
+            throwArchiCodeException(e);
+        }catch(Exception e){
+            throwError(e.getMessage(), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
         }
         return null;
     }
 
     @Override
     public Value visitStepExpr(ArchiCodeParser.StepExprContext ctx) {
-        if(ctx.INT() == null){
-            return memory.resolveVariable("step", 1);
+        try {
+            if (ctx.INT() == null) {
+                return memory.resolveVariable("step", 1);
+            }
+            return memory.resolveVariable("step", Integer.parseInt(ctx.INT().getText()) + 1);
+        }catch(ArchiCodeException e){
+            throwArchiCodeException(e);
+        }catch(Exception e){
+            throwError(e.getMessage(), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
         }
-        return memory.resolveVariable("step", Integer.parseInt(ctx.INT().getText()) + 1);
+        return null;
     }
 
 
@@ -442,5 +699,11 @@ public class ArchiCodeVisitorImpl extends ArchiCodeBaseVisitor<Value> {
         return signature.toString();
     }
 
+    private void throwArchiCodeException(ArchiCodeException e) {
+        throw e;
+    }
 
+    private void throwError(String message, int line, int column) {
+        throw new ArchiCodeException(message, line, column);
+    }
 }

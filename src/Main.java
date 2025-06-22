@@ -10,7 +10,10 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.List;
 
 
 public class Main {
@@ -27,7 +30,19 @@ public class Main {
             CommonTokenStream tokens = new CommonTokenStream(lexer);
             ArchiCodeParser parser = new ArchiCodeParser(tokens);
 
-            ParseTree tree = parser.program();
+            String code = Files.readString(Path.of(filePath));
+            List<String> sourceLines = Arrays.asList(code.split("\\R"));
+
+            parser.removeErrorListeners();
+            parser.addErrorListener(new ArchiCodeSyntaxErrorListener(sourceLines));
+            ParseTree tree = null;
+            try {
+                tree = parser.program();
+            }catch (Exception e){
+                System.err.println(e.getMessage());
+                System.exit(1);
+
+            }
             if(parser.getNumberOfSyntaxErrors() > 0){
                 System.out.println("Parse errors: " + parser.getNumberOfSyntaxErrors());
                 return;
@@ -35,7 +50,9 @@ public class Main {
 
             ParseTreeWalker walker = new ParseTreeWalker();
             ArchiCodeListenerImpl listener = new ArchiCodeListenerImpl();
+
             walker.walk(listener, tree);
+
 
             ArchiCodeVisitorImpl visitor = new ArchiCodeVisitorImpl(Path.of(filePath));
             visitor.visit(tree);

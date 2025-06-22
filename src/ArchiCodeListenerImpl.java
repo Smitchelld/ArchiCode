@@ -9,9 +9,8 @@ import java.util.Stack;
 
 public class ArchiCodeListenerImpl extends ArchiCodeBaseListener {
 
-    public Stack<HashMap<String, Value>> Variables = new Stack<HashMap<String, Value>>();
-    public Map<String, Map<String, Blueprint>> Blueprints = new HashMap<>();
-
+    public Stack<HashMap<String, String>> Variables = new Stack<>();
+    public Map<String, Map<String, String>> Blueprints = new HashMap<>();
 
 
     ArchiCodeListenerImpl(){
@@ -40,11 +39,14 @@ public class ArchiCodeListenerImpl extends ArchiCodeBaseListener {
     public void enterDefineStatement(ArchiCodeParser.DefineStatementContext ctx) {
         var scope = Variables.peek();
         var name = ctx.VarName().getText();
+        var line = ctx.getStart().getLine();
+        var column = ctx.getStart().getCharPositionInLine();
+        String declaration = "line " + line + " column " + column;
         if(scope.containsKey(name)){
-            throw new RuntimeException("Duplicate Variable name: " + name);
+            throw new RuntimeException("Variable {" + name +"} already defined at " + scope.get(name));
         }
 
-        scope.put(name,null);
+        scope.put(name,declaration);
 //        for(int i = 0; i < Variables.size(); i++){
 //            var variable = Variables.get(i);
 //            var variableKey = variable.keySet();
@@ -58,21 +60,31 @@ public class ArchiCodeListenerImpl extends ArchiCodeBaseListener {
 
     @Override
     public void enterBlueprintStatement(ArchiCodeParser.BlueprintStatementContext ctx) {
+        newScope();
         String name = ctx.CapitalVarName().getText();
-
         String signature = Blueprint.generateSignature(ctx.paramList());
+
+        var line = ctx.getStart().getLine();
+        var column = ctx.getStart().getCharPositionInLine();
+        String declaration = "line " + line + " column " + column;
+
         if(Blueprints.containsKey(name) && Blueprints.get(name).containsKey(signature)){
-            throw new RuntimeException("Duplicate Blueprint name: " + name);
+            throw new RuntimeException("Blueprint{"+ name + " (" + signature + ")} already defined at " + Blueprints.get(name).get(signature));
         }
 
         Map<String, String> params = new HashMap<>();
-
+        var scope = Variables.peek();
         if(ctx.paramList() != null){
             for(var param : ctx.paramList().param()){
+                if(scope.containsKey(param.VarName().getText())){
+                    System.err.println("Error at line "+ctx.getStart().getLine() +": Variable {" + param.VarName().getText() +"} already defined at " + scope.get(param.VarName().getText()));
+                    System.exit(1);
+                }
+                String varDeclaration = "line " + param.getStart().getLine() + " column " + param.getStart().getCharPositionInLine();
+                scope.put(param.VarName().getText(), varDeclaration);
                 params.put(param.VarName().getText(), param.type().getText());
             }
         }
-
         Blueprint blueprint;
         if(ctx.type() != null && ctx.VarName() != null){
             //Value value = TODO
@@ -84,21 +96,13 @@ public class ArchiCodeListenerImpl extends ArchiCodeBaseListener {
         }
 
         if(Blueprints.containsKey(name)){
-            Blueprints.get(name).put(signature, blueprint);
+            Blueprints.get(name).put(signature, declaration);
         }
         else{
             Blueprints.put(name, new HashMap<>());
-            Blueprints.get(name).put(signature, blueprint);
+            Blueprints.get(name).put(signature, declaration);
         }
-
-        for (Map.Entry<String, Map<String, Blueprint>> outerEntry : Blueprints.entrySet()) {
-            String outerKey = outerEntry.getKey();
-            Map<String, Blueprint> innerMap = outerEntry.getValue();
-
-            for (String innerKey : innerMap.keySet()) {
-                System.out.println("Blueprint: " + outerKey + " -> " + innerKey);
-            }
-        }
+        exitScope();
     }
 
     @Override
