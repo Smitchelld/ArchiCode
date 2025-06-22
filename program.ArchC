@@ -1,21 +1,88 @@
-define x = 3
+define x = 1
 
-blueprint Silnia(int a) delivers int return = 1{
-    check a > 1 then{
-        return = a * Silnia a-1
-        show return
+blueprint Foo(int n){
+    show n
+    define int x = 100
+    check n > 0 then{
+        Foo n - 1
+    }
+    show x
+    show " "
+    show x@1
+    show "\n"
+}
+
+blueprint Foo2(){
+    define int i = 0
+    repeat until not( i < 10){
+        define j = 0
+        repeat until j >= i{
+            show "i = "
+            show i
+            show "j = "
+            show j
+            show "\n"
+            j = j + 1
+        }
+        i = i + 1
     }
 }
 
-blueprint EditGlobal(){
-    x = 2137
+blueprint Foo2b(){
+    repeat 0 10{
+        define j = 0
+        repeat until not(j < step){
+            show "i ="
+            show step
+            show "j ="
+            show j
+            show "\n"
+            j = j + 1
+        }
+    }
 }
 
 
 
+blueprint Foo3(){
+    define int i = 0
+    repeat until i > 10{
+        define j = 0
+        repeat until j > i{
+            show "i"
+            show i
+            show "j"
+            show j
+            show "====="
+            i = i + 2
+            j = j + 1
+            j = j + 1
+        }
+        i = i + 1
+    }
+}
+
+blueprint Foo4(int n)delivers int return = 17{
+    check n > 0 then{
+        Foo4 n-1
+    }
+    show n/0
+}
+
+blueprint Foo4(int n, int z)delivers int return = 91{
+    repeat 2137{
+        Foo4 1 2
+    }
+}
+
+blueprint Foo5(int z, int o){
+    repeat z{
+        show o
+    }
+}
+
+define z = 0
 
 Core() delivers int coreResult{
-    show x
-    EditGlobal 1 2 3
-    show x
+    Foo5 3 "string"
 }

@@ -11,8 +11,11 @@ public class Memory {
 
     public Stack<HashMap<String, Value>> Variables = new Stack<HashMap<String, Value>>();
     public Map<String, Map<String, Blueprint>> Blueprints = new HashMap<>();
-
+    public static Stack<String> FunctionCallStack = new Stack<>();
     private Path filePath;
+    private static final int RecursionLimit = 30;
+    private static int RecursionCounter = 0;
+
 
     public Memory(Path filePath) {
         this.filePath = filePath;
@@ -43,18 +46,11 @@ public class Memory {
     }
 
     public Value resolveVariable(String name) {
-        for(int i = Variables.size() - 1; i >= 0; i--) {;
-            var scope = Variables.get(i);
-            if(scope.containsKey(name)) {
-                return scope.get(name);
-            }
-
-        }
-        throw new RuntimeException("Variable not found" + name);
+        return resolveVariable(name, 0);
     }
 
     public Value resolveVariable(String name, int scopeDepth) {
-        if(scopeDepth < 0 || scopeDepth > Variables.size() - 1){
+        if(scopeDepth < 0 || scopeDepth >= Variables.size() - 1){
             throw new RuntimeException("Invalid scope depth");
         }
         for (int i = Variables.size() - 1 - scopeDepth; i >= 0; i--) {
@@ -63,7 +59,18 @@ public class Memory {
                 return scope.get(name);
             }
         }
-        throw new RuntimeException("Variable not found: " + name);
+        StringBuilder message = new StringBuilder();
+        for(int i = scopeDepth; i < Variables.size(); i++){
+            var variable = Variables.get(i);
+            var variableKey = variable.keySet();
+            if(!variableKey.isEmpty()) {
+                message.append(variableKey).append(" ");
+            }
+        }
+        message.delete(message.length() - 1, message.length());
+
+
+        throw new RuntimeException("Variable {"+ name+"} not found maybe you meant one of these: " + message.toString());
     }
 
 
@@ -109,9 +116,34 @@ public class Memory {
             throw new RuntimeException("Blueprint not found: " + name);
         }
         if(!Blueprints.get(name).containsKey(signature)){
-            throw new RuntimeException("Blueprint not found: " + name + " -> " + signature);
+            StringBuilder message = new StringBuilder();
+            var scope = Blueprints.get(name);
+            for(var x : scope.keySet()){
+                message.append(name).append("(").append(x).append(") or ");
+            }
+            message.delete(message.length() - 3, message.length());
+            throw new RuntimeException("Blueprint not found: " + name + " (" + signature + ") maybe you meant: " + message.toString());
         }
         return Blueprints.get(name).get(signature);
     }
 
+    public static void countRecursion(){
+        RecursionCounter++;
+        if(RecursionCounter > RecursionLimit){
+            throw new RuntimeException("Recursion limit exceeded");
+        }
+    }
+    public static void decrementRecursion(){
+        RecursionCounter--;
+    }
+
+    public static void addCallStack(String name){
+        FunctionCallStack.push(name);
+    }
+    public static void removeCallStack(){
+        FunctionCallStack.pop();
+    }
+    public static String getCallStack(){
+        return FunctionCallStack.peek();
+    }
 }

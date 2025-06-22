@@ -34,4 +34,9 @@ public class BoolValue extends Value {
         }
         return super.eq(v);
     }
+
+    @Override
+    public Value neg() {
+        return !(getBoolean()) ? TRUE : FALSE;
+    }
 }
