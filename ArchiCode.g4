@@ -4,6 +4,7 @@ program: statement+ EOF;
 
 statement
     : showStatement
+    | block
     | defineStatement
     | defineCollectionStatement
     | assignStatement
@@ -92,13 +93,14 @@ mulDivExpr
     : unaryExpr (('*' | '/') unaryExpr)*
     ;
 unaryExpr
-    : '-' unaryExpr
-    | '+' unaryExpr
-    | 'not' unaryExpr
-    | atom
+    :'('type')' unaryExpr                           #typeCastExpr
+    | '-' unaryExpr                                 #negExpr
+    | '+' unaryExpr                                 #plusExpr
+    | 'not' unaryExpr                               #notExpr
+    | atom                                          #atomExpr
     ;
 atom
-    : CapitalVarName expr* (';')?                     # funcCallExpr
+    : CapitalVarName expr* (';')?                   # funcCallExpr
     | INT                                           # intExpr
     | FLOAT                                         # floatExpr
     | STRING                                        # stringExpr

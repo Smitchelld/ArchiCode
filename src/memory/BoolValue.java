@@ -12,6 +12,30 @@ public class BoolValue extends Value {
     }
 
     @Override
+    public float getFloat() {
+        if(getBoolean()){
+            return 1.0F;
+        }
+        return 0.0F;
+    }
+
+    @Override
+    public int getInt() {
+        if(getBoolean()){
+            return 1;
+        }
+        return 0;
+    }
+
+    @Override
+    public char getChar() {
+        if(getBoolean()){
+            return 't';
+        }
+        return 'f';
+    }
+
+    @Override
     public Value and(Value v) {
         if(v.type == Type.BOOL) {
             return getBoolean() && v.getBoolean() ? TRUE : FALSE;
@@ -36,7 +60,7 @@ public class BoolValue extends Value {
     }
 
     @Override
-    public Value neg() {
+    public Value not() {
         return !(getBoolean()) ? TRUE : FALSE;
     }
 }

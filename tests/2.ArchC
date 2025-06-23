@@ -1,0 +1,13 @@
+define int x = 100
+
+blueprint Foo(int n) delivers int return = 0{
+    define int x = n
+    check n > 0 then{
+        Foo n-1
+    }
+    show x " " x@1
+}
+
+Core() delivers int coreResult{
+    Foo(6)
+}

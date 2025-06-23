@@ -11,16 +11,25 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 
 
 public class Main {
     public static void main(String[] args) {
         String filePath = "./program.ArchC";
         if(args.length == 1){
-            filePath = args[0];
+            if(args[0].equals("__test")){
+                Scanner scanner = new Scanner(System.in);
+                System.out.println("Podaj nazwe testu");
+                String numer = scanner.nextLine();
+                filePath = "./tests/" + numer + ".ArchC";
+            }else {
+                filePath = args[0];
+            }
         }
         
         try{
@@ -38,7 +47,7 @@ public class Main {
             ParseTree tree = null;
             try {
                 tree = parser.program();
-            }catch (Exception e){
+            }catch (ArchiCodeException e){
                 System.err.println(e.getMessage());
                 System.exit(1);
 
@@ -57,6 +66,10 @@ public class Main {
             ArchiCodeVisitorImpl visitor = new ArchiCodeVisitorImpl(Path.of(filePath));
             visitor.visit(tree);
 
+        }catch (ArchiCodeException e){
+            System.err.println(e.getMessage());
+        }catch (NoSuchFileException e){
+            System.err.println("No such File " + e.getMessage());
         } catch (Exception e){
             e.printStackTrace();
         }
