@@ -1,0 +1,10 @@
+define int x = 100
+
+blueprint Foo(int x){
+    >>define int x = 1
+    show x " " x@2
+}
+
+Core() delivers int coreResult{
+    Foo 5
+}

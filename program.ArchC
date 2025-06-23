@@ -84,5 +84,7 @@ blueprint Foo5(int z, int o){
 define z = 0
 
 Core() delivers int coreResult{
-    Foo5 3 "string"
+    repeat -300{
+        show "test"
+    }
 }

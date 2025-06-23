@@ -20,11 +20,9 @@ public class IntValue extends Value{
 
     @Override
     public boolean getBoolean() {
-        if(getInt() == 0) {
-            return false;
-        }
-        return true;
+        return getInt() != 0;
     }
+
 
     @Override
     public Value add(Value v) {

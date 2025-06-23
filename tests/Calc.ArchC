@@ -1,0 +1,64 @@
+blueprint Silnia(int a) delivers int result = 1{
+    repeat 2 a + 1 {
+        result = result * step
+    }
+    show "factorial(" a ") = " result
+}
+
+blueprint Power(float a, int b) delivers float result = 1{
+    check b < 0 then{
+        show "potega musi byc nieujemna"
+    }otherwise{
+        repeat b{
+            result = result * a
+        }
+        show a "^" b "=" result
+    }
+}
+
+blueprint Calc(float a, float b, string op) delivers float result = 0{
+    check op == "+" then {
+        result = a + b
+    } otherwise check op == "-" then {
+        result = a - b
+    } otherwise check op == "*" then {
+        result = a * b
+    } otherwise check op == "/" then {
+        result = a / b
+    } otherwise {
+        show "Invalid operator: " op
+    }
+
+    show a op b "=" result
+}
+
+Core() delivers int coreResult{
+    define string op = ""
+
+    repeat until op == "STOP"{
+
+        define float a = 0
+        show "Podaj pierwsza liczbe;"
+        request a
+        show "Podaj operacje(-,+,*,/,^,!) lub \"STOP\":"
+        request op
+        show op
+        check op =="STOP" then{
+        show "Żegnaj Przyjacielu"
+        }otherwise check op == "!" then{
+            Silnia (int) a
+        }otherwise check op =="^" then{
+            define int b = 0
+            show "Podaj potege:"
+            request b
+            Power a b
+        }otherwise check op == "-" or op == "+" or op == "/" or op == "*" then{
+            define float b = 0
+            show "Podaj druga liczbe:"
+            request b
+            Calc a b op
+        }otherwise{
+            show "Myslisz ze jestes sprytny?"
+        }
+    }
+}

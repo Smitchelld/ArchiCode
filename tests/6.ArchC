@@ -1,0 +1,7 @@
+Core() delivers int coreResult{
+    repeat 10{
+        check step / 2.0 == step /2 then{
+            show step/2.0 step/2
+        }
+    }
+}

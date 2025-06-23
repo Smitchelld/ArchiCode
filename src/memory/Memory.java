@@ -50,7 +50,8 @@ public class Memory {
     }
 
     public Value resolveVariable(String name, int scopeDepth) {
-        if(scopeDepth < 0 || scopeDepth >= Variables.size() - 1){
+        //printVariables();
+        if(scopeDepth < 0 || scopeDepth >= Variables.size()){
             throw new RuntimeException("Invalid scope depth");
         }
         for (int i = Variables.size() - 1 - scopeDepth; i >= 0; i--) {
@@ -83,7 +84,9 @@ public class Memory {
             for(int k = 0; k < i; k++){
                 System.out.print(" ");
             }
-            System.out.println(variableKey);
+            for(var x : variableKey){
+                System.out.print(variable.get(x).type + " " + x + " ");
+            }
         }
         System.out.println("==============");
     }
@@ -107,11 +110,11 @@ public class Memory {
     }
 
     public Blueprint resolveBlueprint(String name, String signature) {
-        for(var outerEntry : Blueprints.keySet()) {
-            for(var innerEntry : Blueprints.get(outerEntry).keySet()) {
-                System.out.println(""+outerEntry + "-> " + innerEntry);
-            }
-        }
+//        for(var outerEntry : Blueprints.keySet()) {
+//            for(var innerEntry : Blueprints.get(outerEntry).keySet()) {
+//                System.out.println(""+outerEntry + "-> " + innerEntry);
+//            }
+//        }
         if(!Blueprints.containsKey(name)){
             throw new RuntimeException("Blueprint not found: " + name);
         }

@@ -12,9 +12,10 @@ public class Blueprint {
     ArchiCodeParser.BlockContext block;
     String returnName;
     Value returnValue;
+    Type returnType;
     boolean isVoid;
 
-    public Blueprint(String name, String signature, Map<String, String> params, ArchiCodeParser.BlockContext block,String returnName ,Value returnValue) {
+    public Blueprint(String name, String signature, Map<String, String> params, ArchiCodeParser.BlockContext block,String returnName ,Value returnValue, Type returnType) {
         this.name = name;
         this.signature = signature;
         this.params = params;
@@ -22,6 +23,7 @@ public class Blueprint {
         this.returnName = returnName;
         this.returnValue = returnValue;
         this.isVoid = false;
+        this.returnType = returnType;
     }
 
     public Blueprint(String name, String signature, Map<String, String> params, ArchiCodeParser.BlockContext block) {
@@ -64,5 +66,9 @@ public class Blueprint {
 
     public boolean isVoid() {
         return isVoid;
+    }
+
+    public Type getReturnType() {
+        return returnType;
     }
 }

@@ -43,7 +43,7 @@ public class ArchiCodeListenerImpl extends ArchiCodeBaseListener {
         var column = ctx.getStart().getCharPositionInLine();
         String declaration = "line " + line + " column " + column;
         if(scope.containsKey(name)){
-            throw new RuntimeException("Variable {" + name +"} already defined at " + scope.get(name));
+            throw new ArchiCodeException("Variable {" + name +"} already defined at " + scope.get(name), line, column);
         }
 
         scope.put(name,declaration);
@@ -69,7 +69,7 @@ public class ArchiCodeListenerImpl extends ArchiCodeBaseListener {
         String declaration = "line " + line + " column " + column;
 
         if(Blueprints.containsKey(name) && Blueprints.get(name).containsKey(signature)){
-            throw new RuntimeException("Blueprint{"+ name + " (" + signature + ")} already defined at " + Blueprints.get(name).get(signature));
+            throw new ArchiCodeException("Blueprint{"+ name + " (" + signature + ")} already defined at " + Blueprints.get(name).get(signature), line, column);
         }
 
         Map<String, String> params = new HashMap<>();
@@ -87,10 +87,9 @@ public class ArchiCodeListenerImpl extends ArchiCodeBaseListener {
         }
         Blueprint blueprint;
         if(ctx.type() != null && ctx.VarName() != null){
-            //Value value = TODO
             String returnName = ctx.VarName().getText();
 
-            blueprint = new Blueprint(name, signature, params, ctx.block(), returnName, null);
+            blueprint = new Blueprint(name, signature, params, ctx.block(), returnName, null, null);
         }else{
             blueprint = new Blueprint(name, signature, params, ctx.block());
         }
@@ -126,15 +125,15 @@ public class ArchiCodeListenerImpl extends ArchiCodeBaseListener {
         var scope = Variables.peek();
         scope.put("step", null);
 
-        for(int i = 0; i < Variables.size(); i++){
-            var variable = Variables.get(i);
-            var variableKey = variable.keySet();
-            for(int k = 0; k < i; k++){
-                System.out.print(" ");
-            }
-            System.out.println(variableKey);
-        }
-        System.out.println("==============");
+//        for(int i = 0; i < Variables.size(); i++){
+//            var variable = Variables.get(i);
+//            var variableKey = variable.keySet();
+//            for(int k = 0; k < i; k++){
+//                System.out.print(" ");
+//            }
+//            System.out.println(variableKey);
+//        }
+//        System.out.println("==============");
     }
 
     @Override
@@ -142,14 +141,14 @@ public class ArchiCodeListenerImpl extends ArchiCodeBaseListener {
         var scope = Variables.peek();
         scope.put("step", null);
 
-        for(int i = 0; i < Variables.size(); i++){
-            var variable = Variables.get(i);
-            var variableKey = variable.keySet();
-            for(int k = 0; k < i; k++){
-                System.out.print(" ");
-            }
-            System.out.println(variableKey);
-        }
-        System.out.println("==============");
+//        for(int i = 0; i < Variables.size(); i++){
+//            var variable = Variables.get(i);
+//            var variableKey = variable.keySet();
+//            for(int k = 0; k < i; k++){
+//                System.out.print(" ");
+//            }
+//            System.out.println(variableKey);
+//        }
+//        System.out.println("==============");
     }
 }

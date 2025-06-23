@@ -17,10 +17,7 @@ public class FloatValue extends Value {
 
     @Override
     public boolean getBoolean() {
-        if(getFloat() == 0) {
-            return false;
-        }
-        return true;
+        return getFloat() != 0;
     }
 
     @Override
@@ -56,5 +53,34 @@ public class FloatValue extends Value {
             return new FloatValue(getFloat() / v.getFloat());
         }
         return super.div(v);
+    }
+
+    @Override
+    public Value eq(Value v) {
+        if(v.type == Type.FLOAT || v.type == Type.INT) {
+            return getFloat() == v.getFloat() ? TRUE : FALSE;
+        }
+        return super.eq(v);
+    }
+
+    @Override
+    public Value gt(Value v) {
+        if(v.type == Type.FLOAT || v.type == Type.INT) {
+            return getFloat() > v.getFloat() ? TRUE : FALSE;
+        }
+        return super.gt(v);
+    }
+
+    @Override
+    public Value lt(Value v) {
+        if(v.type == Type.FLOAT || v.type == Type.INT) {
+            return getFloat() < v.getFloat() ? TRUE : FALSE;
+        }
+        return super.gt(v);
+    }
+
+    @Override
+    public Value neg() {
+        return new FloatValue(-getFloat());
     }
 }

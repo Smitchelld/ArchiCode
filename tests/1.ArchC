@@ -1,0 +1,18 @@
+define int x = 1
+define int y = 100
+
+Core() delivers int coreResult{
+    define int x = 2
+    {
+        define int x = 3
+        show x
+        show x@1
+        show x@2
+        show y
+        show y@1
+        show y@2
+
+        >>show x@3
+        >>show y@3
+    }
+}

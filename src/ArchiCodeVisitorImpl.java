@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -87,9 +88,15 @@ public class ArchiCodeVisitorImpl extends ArchiCodeBaseVisitor<Value> {
             Type type;
             if (ctx.type() != null) {
                 type = Type.fromString(ctx.type().getText());
+                value = value.castTo(type);
             } else {
                 type = Type.inferType(value);
             }
+
+            if(value.type != type){
+                value = value.castTo(type);
+            }
+
             memory.createVariable(name, type, value);
         }catch(ArchiCodeException e){
             throwArchiCodeException(e);
@@ -129,10 +136,18 @@ public class ArchiCodeVisitorImpl extends ArchiCodeBaseVisitor<Value> {
     @Override
     public Value visitAssignStatement(ArchiCodeParser.AssignStatementContext ctx) {
         try {
-            var VarName = ctx.VarName().getText();
-            Value value = visit(ctx.expr());
-            memory.assignValue(VarName, value);
-            return memory.resolveVariable(VarName);
+            String varName = ctx.VarName().getText();
+            Value exprValue = visit(ctx.expr());
+
+            Value varValue = memory.resolveVariable(varName);
+            Type varType = varValue.type;
+
+            if (exprValue.type != varType) {
+                exprValue = exprValue.castTo(varType);
+            }
+
+            memory.assignValue(varName, exprValue);
+            return memory.resolveVariable(varName);
         } catch (ArchiCodeException e) {
             throwArchiCodeException(e);
         } catch (Exception e) {
@@ -208,7 +223,10 @@ public class ArchiCodeVisitorImpl extends ArchiCodeBaseVisitor<Value> {
     @Override
     public Value visitStringExpr(ArchiCodeParser.StringExprContext ctx) {
         try {
-            return new StringValue(ctx.STRING().getText());
+            StringBuilder text = new StringBuilder(ctx.STRING().getText());
+            text.deleteCharAt(text.length()-1);
+            text.deleteCharAt(0);
+            return new StringValue(text.toString());
         }catch(ArchiCodeException e){
             throwArchiCodeException(e);
         }catch(Exception e){
@@ -414,22 +432,58 @@ public class ArchiCodeVisitorImpl extends ArchiCodeBaseVisitor<Value> {
         return null;
     }
 
-    @Override
-    public Value visitUnaryExpr(ArchiCodeParser.UnaryExprContext ctx) {
-        try {
-            if (ctx.getChildCount() == 2) {
-                String operator = ctx.getChild(0).getText();
-                Value value = visit(ctx.unaryExpr());
 
-                return switch (operator) {
-                    case "-" -> value.neg();
-                    case "+" -> value;
-                    case "not" -> value.neg();
-                    default -> throw new IllegalStateException("Unexpected value: " + operator);
-                };
-            } else {
-                return visit(ctx.atom());
-            }
+    @Override
+    public Value visitTypeCastExpr(ArchiCodeParser.TypeCastExprContext ctx) {
+        try {
+            Type type = Type.fromString(ctx.type().getText());
+            Value val = visit(ctx.unaryExpr());
+            return switch (type) {
+                case INT -> new IntValue(val.getInt());
+                case FLOAT -> new FloatValue(val.getFloat());
+                case STRING -> new StringValue(val.getString());
+                case CHAR -> new CharValue(val.getChar());
+                case BOOL -> new BoolValue(val.getBoolean());
+                default -> null;
+            };
+        }catch(ArchiCodeException e){
+            throwArchiCodeException(e);
+        }catch(Exception e){
+            throwError(e.getMessage(), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
+        }
+        return null;
+    }
+
+    @Override
+    public Value visitNegExpr(ArchiCodeParser.NegExprContext ctx) {
+        try {
+            Value val = visit(ctx.unaryExpr());
+            return val.neg();
+        }catch(ArchiCodeException e){
+            throwArchiCodeException(e);
+        }catch(Exception e){
+            throwError(e.getMessage(), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
+        }
+        return null;
+    }
+
+    @Override
+    public Value visitNotExpr(ArchiCodeParser.NotExprContext ctx) {
+        try {
+            Value val = visit(ctx.unaryExpr());
+            return val.not();
+        }catch(ArchiCodeException e){
+            throwArchiCodeException(e);
+        }catch(Exception e){
+            throwError(e.getMessage(), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
+        }
+        return null;
+    }
+
+    @Override
+    public Value visitPlusExpr(ArchiCodeParser.PlusExprContext ctx) {
+        try {
+            return visit(ctx.unaryExpr());
         }catch(ArchiCodeException e){
             throwArchiCodeException(e);
         }catch(Exception e){
@@ -549,9 +603,9 @@ public class ArchiCodeVisitorImpl extends ArchiCodeBaseVisitor<Value> {
     @Override
     public Value visitBlueprintStatement(ArchiCodeParser.BlueprintStatementContext ctx) {
         try {
-            String blueprintName = ctx.CapitalVarName().toString();
+            String blueprintName = ctx.CapitalVarName().getText();
             String signature = Blueprint.generateSignature(ctx.paramList());
-            Map<String, String> params = new HashMap<>();
+            Map<String, String> params = new LinkedHashMap<>();
             if (ctx.paramList() != null) {
                 for (var param : ctx.paramList().param()) {
                     params.put(param.VarName().getText(), param.type().getText());
@@ -559,8 +613,9 @@ public class ArchiCodeVisitorImpl extends ArchiCodeBaseVisitor<Value> {
             }
             if (ctx.type() != null && ctx.VarName() != null) {
                 var returnName = ctx.VarName().getText();
-                var returnValue = visit(ctx.expr());
-                Blueprint blueprint = new Blueprint(blueprintName, signature, params, ctx.block(), returnName, returnValue);
+                var returnType = Type.fromString(ctx.type().getText());
+                var returnValue = visit(ctx.expr()).castTo(returnType);
+                Blueprint blueprint = new Blueprint(blueprintName, signature, params, ctx.block(), returnName, returnValue, returnType);
                 memory.createBlueprint(blueprintName, signature, blueprint);
             } else {
                 Blueprint blueprint = new Blueprint(blueprintName, signature, params, ctx.block());
@@ -589,11 +644,12 @@ public class ArchiCodeVisitorImpl extends ArchiCodeBaseVisitor<Value> {
             if (!blueprint.isVoid()) {
                 var returnName = blueprint.getReturnName();
                 var returnValue = blueprint.getReturnValue();
-                var returnType = returnValue.type;
+                var returnType = blueprint.getReturnType();
                 localMemory.createVariable(returnName, returnType, returnValue);
             }
             for (int i = 0; i < blueprint.getParams().size(); i++) {
                 String paramName = params.keySet().toArray(new String[0])[i];
+
                 Value paramValue = visit(ctx.expr(i));
                 Type actParamType = paramValue.type;
                 Type expectedParamType = Type.fromString(params.get(paramName));
@@ -632,7 +688,7 @@ public class ArchiCodeVisitorImpl extends ArchiCodeBaseVisitor<Value> {
             if (!blueprint.isVoid()) {
                 var returnName = blueprint.getReturnName();
                 var returnValue = blueprint.getReturnValue();
-                var returnType = returnValue.type;
+                var returnType = blueprint.getReturnType();
                 localMemory.createVariable(returnName, returnType, returnValue);
             }
             for (int i = 0; i < blueprint.getParams().size(); i++) {
